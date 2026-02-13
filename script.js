@@ -564,6 +564,37 @@
         });
     }
 
+    // ---------- MUSIC START HANDLER ----------
+    function initMusicStart() {
+        var overlay = document.getElementById('musicStartOverlay');
+        var btn = document.getElementById('musicStartBtn');
+
+        btn.addEventListener('click', function () {
+            overlay.classList.add('hidden');
+
+            // Start vinyl spinning
+            var vinyl = document.getElementById('vinylRecord');
+            vinyl.classList.add('spinning');
+
+            // Reload iframe with autoplay to force playback
+            var iframe = document.getElementById('spotifyPlayer');
+            var currentSrc = iframe.src;
+            if (currentSrc.indexOf('autoplay=1') === -1) {
+                iframe.src = currentSrc + '&autoplay=1';
+            } else {
+                // Force reload
+                iframe.src = currentSrc;
+            }
+
+            // Play welcome tone
+            setTimeout(function () {
+                playTone(659.25, 0.4, 'triangle', 0.06);
+            }, 200);
+
+            sfxClick();
+        });
+    }
+
     // ---------- INIT ----------
     document.addEventListener('DOMContentLoaded', function () {
         initParticles();
@@ -573,11 +604,7 @@
         initMusicPlayer();
         initThemes();
         initEasterEggs();
-
-        // Soft welcome tone
-        setTimeout(function () {
-            playTone(659.25, 0.4, 'triangle', 0.06);
-        }, 1500);
+        initMusicStart();
     });
 
 })();
