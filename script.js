@@ -1,55 +1,78 @@
-// ===== PARTICLE SYSTEM =====
-function createParticles() {
-    const particlesContainer = document.getElementById('particles-container');
-    const particles = ['💕', '💖', '💝', '✨', '⭐', '💗'];
+// ========== BEYONCÉ VALENTINE'S - QUEEN BEY JAVASCRIPT ==========
 
-    setInterval(() => {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.textContent = particles[Math.floor(Math.random() * particles.length)];
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        particle.style.animationDelay = Math.random() * 5 + 's';
+// ===== AUDIO SYSTEM (Web Audio API) =====
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        particlesContainer.appendChild(particle);
+function playSound(frequency, duration, type = 'sine') {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
-        setTimeout(() => {
-            particle.remove();
-        }, 20000);
-    }, 2000);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = frequency;
+    oscillator.type = type;
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration);
 }
 
-// ===== 3D TILT EFFECT FOR PHOTO CARDS =====
-function initTiltEffect() {
-    const cards = document.querySelectorAll('[data-tilt]');
+function playClickSound() {
+    playSound(800, 0.1, 'sine');
+    setTimeout(() => playSound(1200, 0.05, 'sine'), 50);
+}
 
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.05)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-        });
+function playCelebrationSound() {
+    // Ascending notes celebration
+    const notes = [523.25, 587.33, 659.25, 783.99, 880.00];
+    notes.forEach((note, i) => {
+        setTimeout(() => playSound(note, 0.3, 'triangle'), i * 100);
     });
+}
+
+function playCrazyInLoveSound() {
+    // EPIC sound for Crazy in Love button
+    const epicNotes = [
+        {freq: 523.25, dur: 0.2},
+        {freq: 659.25, dur: 0.2},
+        {freq: 783.99, dur: 0.3},
+        {freq: 1046.50, dur: 0.4},
+        {freq: 1318.51, dur: 0.5}
+    ];
+    epicNotes.forEach((note, i) => {
+        setTimeout(() => playSound(note.freq, note.dur, 'sawtooth'), i * 150);
+    });
+}
+
+// ===== FLOATING ELEMENTS (Crowns & Hearts) =====
+function createFloatingElements() {
+    const container = document.getElementById('floating-elements');
+    const elements = ['👑', '💕', '💖', '✨', '🐝'];
+
+    setInterval(() => {
+        const elem = document.createElement('div');
+        elem.className = 'float-element';
+        elem.textContent = elements[Math.floor(Math.random() * elements.length)];
+        elem.style.left = Math.random() * 100 + '%';
+        elem.style.top = Math.random() * 100 + '%';
+        elem.style.animationDelay = Math.random() * 2 + 's';
+        elem.style.animationDuration = (Math.random() * 4 + 6) + 's';
+
+        container.appendChild(elem);
+
+        setTimeout(() => elem.remove(), 12000);
+    }, 3000);
 }
 
 // ===== IMAGE LOADING =====
 function initImageLoading() {
-    document.querySelectorAll('.gallery-photo').forEach(img => {
+    document.querySelectorAll('.photo-img').forEach(img => {
         img.addEventListener('load', function() {
             this.classList.add('loaded');
-            const placeholder = this.parentElement.querySelector('.photo-placeholder');
+            const placeholder = this.closest('.gold-frame').querySelector('.photo-placeholder');
             if (placeholder) {
                 placeholder.style.display = 'none';
             }
@@ -57,16 +80,11 @@ function initImageLoading() {
 
         img.addEventListener('error', function() {
             this.style.display = 'none';
-            const placeholder = this.parentElement.querySelector('.photo-placeholder');
-            if (placeholder) {
-                placeholder.style.display = 'flex';
-            }
         });
 
-        // Check if image is already loaded (from cache)
         if (img.complete && img.naturalWidth > 0) {
             img.classList.add('loaded');
-            const placeholder = img.parentElement.querySelector('.photo-placeholder');
+            const placeholder = img.closest('.gold-frame').querySelector('.photo-placeholder');
             if (placeholder) {
                 placeholder.style.display = 'none';
             }
@@ -75,203 +93,298 @@ function initImageLoading() {
 }
 
 // ===== BUTTON HANDLERS =====
+let clickCount = 0;
+
 function initButtons() {
-    const buttons = document.querySelectorAll('.response-btn');
-
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.bey-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
             const response = this.getAttribute('data-response');
-            handleResponse(response);
-        });
+            const song = this.getAttribute('data-song');
 
-        // Enhanced hover effect
-        button.addEventListener('mouseenter', function() {
-            createSparkles(this);
+            playClickSound();
+
+            if (response === 'crazy') {
+                // SPECIAL CRAZY IN LOVE CELEBRATION
+                handleCrazyInLove(song);
+            } else {
+                handleResponse(response, song);
+            }
         });
     });
 }
 
-function createSparkles(element) {
-    const sparkles = ['✨', '⭐', '💫'];
-    const sparkle = document.createElement('span');
-    sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-    sparkle.style.position = 'absolute';
-    sparkle.style.fontSize = '1.2rem';
-    sparkle.style.pointerEvents = 'none';
-    sparkle.style.left = Math.random() * 100 + '%';
-    sparkle.style.top = Math.random() * 100 + '%';
-    sparkle.style.animation = 'sparkleFloat 1s ease-out forwards';
-    sparkle.style.zIndex = '1000';
-
-    element.appendChild(sparkle);
-
-    setTimeout(() => {
-        sparkle.remove();
-    }, 1000);
-}
-
-// Add sparkle animation to CSS dynamically
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes sparkleFloat {
-        0% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: translateY(-50px) scale(0.5);
-        }
-    }
-`;
-document.head.appendChild(style);
-
 // ===== RESPONSE HANDLING =====
-function handleResponse(type) {
+function handleResponse(response, song) {
     const questionSection = document.querySelector('.question-section');
-    const responseContainer = document.getElementById('responseContainer');
-    const responseMessage = document.getElementById('responseMessage');
+    const responseSection = document.getElementById('responseSection');
+    const responseTitle = document.getElementById('responseTitle');
+    const responseLyric = document.getElementById('responseLyric');
+    const responseIcon = document.getElementById('responseIcon');
 
-    // Fade out question section
     questionSection.style.opacity = '0';
     questionSection.style.transform = 'scale(0.9)';
 
     setTimeout(() => {
         questionSection.style.display = 'none';
 
-        let message = '';
-        switch(type) {
-            case 'yes':
-                message = "Yay! I'm so happy! 💕";
-                break;
-            case 'YES':
-                message = "YES! This is amazing! 💖✨";
-                break;
-            case 'forever':
-                message = "FOREVER! You've made my day! 💝💖💕";
-                break;
+        let title, lyric, icon;
+
+        if (response === 'xo') {
+            title = "XO! 💕";
+            lyric = '"In the darkest night hour, I\'ll search through the crowd. Your face is all that I see"';
+            icon = '💕✨💕';
+        } else if (response === 'halo') {
+            title = "You're My HALO! ✨";
+            lyric = '"Baby, I can feel your halo. You know you\'re my saving grace"';
+            icon = '✨👑✨';
         }
 
-        responseMessage.textContent = message;
-        responseContainer.classList.add('show');
+        responseTitle.textContent = title;
+        responseLyric.textContent = lyric;
+        responseIcon.textContent = icon;
 
-        // Create celebration effects
-        createConfetti();
-        createFloatingHearts();
+        responseSection.classList.add('show');
+
+        playCelebrationSound();
+        createGoldConfetti(50);
+        createFloatingCrowns(15);
 
     }, 500);
 }
 
-// ===== CONFETTI SYSTEM =====
-function createConfetti() {
-    const confettiContainer = document.getElementById('confettiContainer');
-    const colors = ['#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#fa709a', '#fee140'];
-    const shapes = ['circle', 'square', 'triangle'];
+// ===== CRAZY IN LOVE MEGA CELEBRATION =====
+function handleCrazyInLove(song) {
+    const questionSection = document.querySelector('.question-section');
+    const responseSection = document.getElementById('responseSection');
+    const responseTitle = document.getElementById('responseTitle');
+    const responseLyric = document.getElementById('responseLyric');
+    const responseIcon = document.getElementById('responseIcon');
+    const formationFlash = document.getElementById('formationFlash');
 
-    for (let i = 0; i < 100; i++) {
+    // SCREEN SHAKE
+    document.body.style.animation = 'screenShake 0.5s ease-in-out';
+
+    // FORMATION FLASH
+    formationFlash.classList.add('active');
+    setTimeout(() => formationFlash.classList.remove('active'), 500);
+
+    // PLAY EPIC SOUND
+    playCrazyInLoveSound();
+
+    questionSection.style.opacity = '0';
+    questionSection.style.transform = 'scale(0.9)';
+
+    setTimeout(() => {
+        questionSection.style.display = 'none';
+
+        responseTitle.textContent = "CRAZY IN LOVE! 👑💕👑";
+        responseLyric.textContent = '"Got me looking so crazy right now, your love\'s got me looking so crazy right now!"';
+        responseIcon.textContent = '👑💕🎤✨💖';
+
+        responseSection.classList.add('show');
+
+        // MASSIVE CELEBRATION
+        createGoldConfetti(200);
+        createFloatingCrowns(50);
+        createFloatingHearts(30);
+        createSparkleExplosion();
+
+        // Continue celebration
+        setTimeout(() => {
+            createGoldConfetti(100);
+            playCelebrationSound();
+        }, 2000);
+
+        setTimeout(() => {
+            createGoldConfetti(100);
+            createFloatingCrowns(30);
+        }, 4000);
+
+    }, 600);
+}
+
+// Add screen shake animation
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes screenShake {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        10% { transform: translate(-5px, 2px) rotate(-1deg); }
+        20% { transform: translate(5px, -2px) rotate(1deg); }
+        30% { transform: translate(-5px, 2px) rotate(-1deg); }
+        40% { transform: translate(5px, -2px) rotate(1deg); }
+        50% { transform: translate(-5px, 2px) rotate(-1deg); }
+        60% { transform: translate(5px, -2px) rotate(1deg); }
+        70% { transform: translate(-5px, 2px) rotate(-1deg); }
+        80% { transform: translate(5px, -2px) rotate(1deg); }
+        90% { transform: translate(-5px, 2px) rotate(-1deg); }
+    }
+`;
+document.head.appendChild(shakeStyle);
+
+// ===== GOLD CONFETTI =====
+function createGoldConfetti(count) {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#FFD700', '#DAA520', '#FFA500', '#FF1493', '#B76E79', '#FFB6C1'];
+
+    for (let i = 0; i < count; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
-            confetti.className = 'confetti-piece';
+            confetti.className = 'confetti';
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.width = (Math.random() * 10 + 5) + 'px';
-            confetti.style.height = (Math.random() * 10 + 5) + 'px';
-            confetti.style.animationDelay = (Math.random() * 0.5) + 's';
-            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confetti.style.width = (Math.random() * 15 + 5) + 'px';
+            confetti.style.height = (Math.random() * 15 + 5) + 'px';
+            confetti.style.opacity = '1';
+            confetti.style.animation = `confettiFall ${Math.random() * 2 + 2}s ease-out forwards`;
 
             // Random shapes
-            const shape = shapes[Math.floor(Math.random() * shapes.length)];
-            if (shape === 'circle') {
+            if (Math.random() > 0.5) {
                 confetti.style.borderRadius = '50%';
-            } else if (shape === 'triangle') {
-                confetti.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
             }
 
-            confettiContainer.appendChild(confetti);
+            container.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 4000);
+        }, i * 20);
+    }
+}
+
+const confettiStyle = document.createElement('style');
+confettiStyle.textContent = `
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(confettiStyle);
+
+// ===== FLOATING CROWNS =====
+function createFloatingCrowns(count) {
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            const crown = document.createElement('div');
+            crown.textContent = '👑';
+            crown.style.position = 'fixed';
+            crown.style.fontSize = (Math.random() * 40 + 30) + 'px';
+            crown.style.left = Math.random() * 100 + '%';
+            crown.style.bottom = '-100px';
+            crown.style.zIndex = '9999';
+            crown.style.pointerEvents = 'none';
+            crown.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+            crown.style.transition = 'all 4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+            document.body.appendChild(crown);
 
             setTimeout(() => {
-                confetti.remove();
-            }, 4000);
-        }, i * 30);
+                crown.style.bottom = '120vh';
+                crown.style.transform = `
+                    translateX(${Math.random() * 200 - 100}px)
+                    rotate(${Math.random() * 720}deg)
+                    scale(${Math.random() * 0.5 + 0.8})
+                `;
+                crown.style.opacity = '1';
+            }, 50);
+
+            setTimeout(() => crown.remove(), 4500);
+        }, i * 80);
     }
 }
 
 // ===== FLOATING HEARTS =====
-function createFloatingHearts() {
-    const hearts = ['💕', '💖', '💝', '💗', '💓', '💘'];
+function createFloatingHearts(count) {
+    const hearts = ['💕', '💖', '💝', '💗', '💓', '❤️'];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < count; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
             heart.style.position = 'fixed';
-            heart.style.fontSize = (Math.random() * 40 + 30) + 'px';
+            heart.style.fontSize = (Math.random() * 35 + 25) + 'px';
             heart.style.left = Math.random() * 100 + '%';
             heart.style.bottom = '-100px';
             heart.style.zIndex = '9999';
             heart.style.pointerEvents = 'none';
-            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.opacity = '0';
-            heart.style.transition = 'all 5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            heart.style.filter = 'drop-shadow(0 10px 20px rgba(255, 107, 157, 0.4))';
+            heart.style.filter = 'drop-shadow(0 0 12px rgba(255, 20, 147, 0.6))';
+            heart.style.transition = 'all 4s ease-out';
 
             document.body.appendChild(heart);
 
             setTimeout(() => {
                 heart.style.bottom = '120vh';
-                heart.style.opacity = '1';
                 heart.style.transform = `
-                    translateX(${Math.random() * 300 - 150}px)
-                    rotate(${Math.random() * 720 - 360}deg)
-                    scale(${Math.random() * 0.5 + 0.5})
+                    translateX(${Math.random() * 150 - 75}px)
+                    rotate(${Math.random() * 360}deg)
                 `;
-            }, 100);
+                heart.style.opacity = '1';
+            }, 50);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }, i * 150);
+            setTimeout(() => heart.remove(), 4500);
+        }, i * 100);
     }
 }
 
-// ===== SCROLL ANIMATIONS =====
-function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
+// ===== SPARKLE EXPLOSION =====
+function createSparkleExplosion() {
+    const sparkles = ['✨', '⭐', '💫', '🌟'];
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const sparkle = document.createElement('div');
+            sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+            sparkle.style.position = 'fixed';
+            sparkle.style.fontSize = '2rem';
+            sparkle.style.left = '50%';
+            sparkle.style.top = '50%';
+            sparkle.style.zIndex = '9999';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.transition = 'all 1.5s ease-out';
+            sparkle.style.opacity = '1';
 
-    document.querySelectorAll('.glass-card').forEach(card => {
-        observer.observe(card);
+            document.body.appendChild(sparkle);
+
+            const angle = (Math.PI * 2 * i) / 30;
+            const distance = Math.random() * 300 + 200;
+
+            setTimeout(() => {
+                sparkle.style.transform = `
+                    translate(
+                        ${Math.cos(angle) * distance}px,
+                        ${Math.sin(angle) * distance}px
+                    )
+                    rotate(${Math.random() * 720}deg)
+                `;
+                sparkle.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => sparkle.remove(), 2000);
+        }, i * 30);
+    }
+}
+
+// ===== CROWN CLICK EASTER EGG =====
+function initCrownEasterEgg() {
+    const crown = document.querySelector('.crown-top');
+
+    crown.addEventListener('click', function() {
+        clickCount++;
+        playSound(1000 + (clickCount * 100), 0.1, 'square');
+
+        if (clickCount === 5) {
+            showEasterEggMessage("🐝 BEYHIVE ACTIVATED! 🐝");
+            createFloatingCrowns(20);
+            playCelebrationSound();
+            clickCount = 0;
+        }
     });
 }
 
-// ===== INITIALIZE EVERYTHING =====
-document.addEventListener('DOMContentLoaded', () => {
-    createParticles();
-    initTiltEffect();
-    initImageLoading();
-    initButtons();
-    initScrollAnimations();
-
-    // Add keyboard support
-    document.addEventListener('keypress', (e) => {
-        if (e.key === 'y' || e.key === 'Y') {
-            const yesBtn = document.querySelector('[data-response="yes"]');
-            if (yesBtn) yesBtn.click();
-        }
-    });
-});
-
-// ===== EASTER EGG: KONAMI CODE =====
+// ===== KONAMI CODE: FORMATION MODE =====
 let konamiCode = [];
 const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
@@ -280,15 +393,127 @@ document.addEventListener('keydown', (e) => {
     konamiCode = konamiCode.slice(-10);
 
     if (konamiCode.join(',') === konamiSequence.join(',')) {
-        createMassiveHeartExplosion();
+        activateFormationMode();
         konamiCode = [];
     }
 });
 
-function createMassiveHeartExplosion() {
-    for (let i = 0; i < 100; i++) {
+function activateFormationMode() {
+    const formationFlash = document.getElementById('formationFlash');
+
+    showEasterEggMessage("👑 FORMATION! 👑<br>OKAY LADIES NOW LET'S GET IN FORMATION!");
+
+    // Flash effect
+    formationFlash.classList.add('active');
+    setTimeout(() => formationFlash.classList.remove('active'), 500);
+
+    // Massive celebration
+    playCrazyInLoveSound();
+
+    for (let i = 0; i < 5; i++) {
         setTimeout(() => {
-            createFloatingHearts();
-        }, i * 100);
+            createGoldConfetti(50);
+            createFloatingCrowns(15);
+            playSound(523.25 + (i * 100), 0.3, 'sawtooth');
+        }, i * 500);
     }
 }
+
+// ===== EASTER EGG MESSAGE DISPLAY =====
+function showEasterEggMessage(message) {
+    const eggMessage = document.getElementById('easterEggMessage');
+    eggMessage.innerHTML = message;
+    eggMessage.classList.add('show');
+
+    setTimeout(() => {
+        eggMessage.classList.remove('show');
+    }, 3000);
+}
+
+// ===== PHOTO CARD INTERACTIONS =====
+function initPhotoCardEffects() {
+    document.querySelectorAll('.photo-card').forEach(card => {
+        card.addEventListener('click', function() {
+            playClickSound();
+            const album = this.getAttribute('data-album');
+
+            let message = '';
+            if (album === 'dangerously') {
+                message = '🎵 "Dangerously in Love" 🎵';
+            } else if (album === 'halo') {
+                message = '✨ "Remember those walls I built? Well, baby, they\'re tumbling down!" ✨';
+            } else if (album === 'renaissance') {
+                message = '🌟 "RENAISSANCE" 🌟<br>A New Era of Love!';
+            }
+
+            if (message) {
+                showEasterEggMessage(message);
+            }
+        });
+    });
+}
+
+// ===== HIDDEN LYRICS EASTER EGG =====
+let secretClicks = 0;
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('beyhive-text')) {
+        secretClicks++;
+        if (secretClicks === 3) {
+            showEasterEggMessage('🐝 "Who run the world? GIRLS!" 🐝');
+            createFloatingCrowns(10);
+            playCelebrationSound();
+            secretClicks = 0;
+        }
+    }
+});
+
+// ===== MICROPHONE EASTER EGG =====
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('microphone-icon')) {
+        playSound(800, 0.3, 'sine');
+        showEasterEggMessage('🎤 "Check on it!" 🎤');
+        e.target.style.animation = 'none';
+        setTimeout(() => {
+            e.target.style.animation = 'micSwing 2s ease-in-out infinite';
+        }, 100);
+    }
+});
+
+// ===== INITIALIZE EVERYTHING =====
+document.addEventListener('DOMContentLoaded', () => {
+    createFloatingElements();
+    initImageLoading();
+    initButtons();
+    initCrownEasterEgg();
+    initPhotoCardEffects();
+
+    // Welcome message
+    setTimeout(() => {
+        playSound(659.25, 0.5, 'triangle');
+    }, 1000);
+
+    console.log('👑 BEYONCÉ VALENTINE\'S LOADED 👑');
+    console.log('🐝 Easter Eggs:');
+    console.log('- Click the crown 5 times');
+    console.log('- Click the Beyhive text 3 times');
+    console.log('- Click the microphone');
+    console.log('- Click any photo');
+    console.log('- Konami Code: ↑↑↓↓←→←→ B A');
+    console.log('- Press "CRAZY IN LOVE" for the ultimate celebration!');
+});
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'y' || e.key === 'Y') {
+        const xoBtn = document.querySelector('.btn-xo');
+        if (xoBtn) xoBtn.click();
+    }
+    if (e.key === 'h' || e.key === 'H') {
+        const haloBtn = document.querySelector('.btn-halo');
+        if (haloBtn) haloBtn.click();
+    }
+    if (e.key === 'c' || e.key === 'C') {
+        const crazyBtn = document.querySelector('.btn-crazy');
+        if (crazyBtn) crazyBtn.click();
+    }
+});
