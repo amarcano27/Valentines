@@ -561,13 +561,16 @@
         }
 
         function closeNoOverlay() {
-            noOverlay.classList.remove('show');
+            // Fade out first
+            noOverlay.style.opacity = '0';
 
-            // Reset inline styles after close transition finishes
+            // After fade completes, hide completely and reset
             setTimeout(function () {
+                noOverlay.classList.remove('show');
+                noOverlay.style.opacity = '';
                 noCard.style.transform = '';
                 noCard.style.transition = '';
-            }, 600);
+            }, 500);
 
             sfxClick();
         }
@@ -583,12 +586,16 @@
                 playTone(200 - noStep * 40, 0.3, 'sawtooth', 0.1);
             } else {
                 // All confirmations done - show the roast!
-                noOverlay.classList.remove('show');
+                // Fade out first
+                noOverlay.style.opacity = '0';
+
                 setTimeout(function () {
+                    noOverlay.classList.remove('show');
+                    noOverlay.style.opacity = '';
                     noCard.style.transform = '';
                     noCard.style.transition = '';
-                }, 600);
-                showRoast();
+                    showRoast();
+                }, 500);
             }
         });
 
@@ -612,8 +619,15 @@
 
         // Close roast and go back
         roastCloseBtn.addEventListener('click', function () {
-            roastOverlay.classList.remove('show');
-            roastPlayer.src = ''; // stop the video
+            // Fade out
+            roastOverlay.style.opacity = '0';
+
+            setTimeout(function () {
+                roastOverlay.classList.remove('show');
+                roastOverlay.style.opacity = '';
+                roastPlayer.src = ''; // stop the video
+            }, 600);
+
             sfxCelebration();
             spawnConfetti(80);
             floatEmojis(['\u2764\uFE0F', '\uD83D\uDC95', '\uD83D\uDC51', '\u2728'], 20);
