@@ -71,6 +71,7 @@ function createFloatingElements() {
 function initImageLoading() {
     document.querySelectorAll('.photo-img').forEach(img => {
         img.addEventListener('load', function() {
+            console.log('Image loaded:', this.src);
             this.classList.add('loaded');
             const placeholder = this.closest('.gold-frame').querySelector('.photo-placeholder');
             if (placeholder) {
@@ -79,15 +80,20 @@ function initImageLoading() {
         });
 
         img.addEventListener('error', function() {
+            console.log('Image error:', this.src);
             this.style.display = 'none';
         });
 
+        // Check if image is already loaded (from cache)
         if (img.complete && img.naturalWidth > 0) {
+            console.log('Image already loaded:', img.src);
             img.classList.add('loaded');
             const placeholder = img.closest('.gold-frame').querySelector('.photo-placeholder');
             if (placeholder) {
                 placeholder.style.display = 'none';
             }
+        } else {
+            console.log('Image waiting to load:', img.src);
         }
     });
 }
@@ -493,27 +499,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 
     console.log('👑 BEYONCÉ VALENTINE\'S LOADED 👑');
-    console.log('🐝 Easter Eggs:');
-    console.log('- Click the crown 5 times');
-    console.log('- Click the Beyhive text 3 times');
-    console.log('- Click the microphone');
-    console.log('- Click any photo');
-    console.log('- Konami Code: ↑↑↓↓←→←→ B A');
-    console.log('- Press "CRAZY IN LOVE" for the ultimate celebration!');
-});
-
-// ===== KEYBOARD SHORTCUTS =====
-document.addEventListener('keypress', (e) => {
-    if (e.key === 'y' || e.key === 'Y') {
-        const xoBtn = document.querySelector('.btn-xo');
-        if (xoBtn) xoBtn.click();
-    }
-    if (e.key === 'h' || e.key === 'H') {
-        const haloBtn = document.querySelector('.btn-halo');
-        if (haloBtn) haloBtn.click();
-    }
-    if (e.key === 'c' || e.key === 'C') {
-        const crazyBtn = document.querySelector('.btn-crazy');
-        if (crazyBtn) crazyBtn.click();
-    }
+    console.log('🐝 MOBILE EASTER EGGS:');
+    console.log('- TAP the crown 5 times → Beyhive!');
+    console.log('- TAP "Welcome to the Beyhive" 3 times → Formation!');
+    console.log('- TAP the microphone → Surprise!');
+    console.log('- TAP any photo → Lyrics!');
+    console.log('- TAP "CRAZY IN LOVE" → ULTIMATE CELEBRATION!');
+    console.log('💕 Enjoy the Queen Bey experience!');
 });
