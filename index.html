@@ -3,154 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👑 Crazy in Love with You 💕</title>
+    <title>Crazy in Love with You</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Honeycomb Background Pattern -->
-    <div class="honeycomb-bg"></div>
+<body data-theme="golden">
 
-    <!-- Floating Crowns & Hearts -->
-    <div id="floating-elements"></div>
+    <!-- Canvas Background -->
+    <canvas id="particleCanvas"></canvas>
 
-    <!-- Spotlight Effect -->
-    <div class="spotlight"></div>
+    <!-- Ambient Glow Orbs -->
+    <div class="ambient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
+    <!-- Theme Switcher -->
+    <div class="theme-switcher" id="themeSwitcher">
+        <button class="theme-toggle" id="themeToggle" aria-label="Switch theme">
+            <span class="theme-icon">&#9830;</span>
+        </button>
+        <div class="theme-menu" id="themeMenu">
+            <button class="theme-option active" data-theme="golden" title="Golden Era">
+                <span class="theme-swatch golden-swatch"></span>
+                <span>Golden</span>
+            </button>
+            <button class="theme-option" data-theme="lemonade" title="Lemonade">
+                <span class="theme-swatch lemonade-swatch"></span>
+                <span>Lemonade</span>
+            </button>
+            <button class="theme-option" data-theme="renaissance" title="Renaissance">
+                <span class="theme-swatch renaissance-swatch"></span>
+                <span>Renaissance</span>
+            </button>
+            <button class="theme-option" data-theme="halo" title="Halo">
+                <span class="theme-swatch halo-swatch"></span>
+                <span>Halo</span>
+            </button>
+        </div>
+    </div>
 
-        <!-- HERO: Crazy in Love -->
-        <header class="hero-section">
-            <div class="crown-top">👑</div>
-            <h1 class="main-title">
-                <span class="word gold-text">Crazy</span>
-                <span class="word">in</span>
-                <span class="word rose-gold-text">Love</span>
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero-badge">
+                <span class="crown-icon" id="crownIcon">&#x1F451;</span>
+            </div>
+            <h1 class="hero-title" id="heroTitle">
+                <span class="title-line line-1">Crazy</span>
+                <span class="title-line line-2">in</span>
+                <span class="title-line line-3">Love</span>
             </h1>
-            <h2 class="subtitle">with You, My Queen 💕</h2>
+            <p class="hero-subtitle">with You, My Queen</p>
 
-            <!-- Animated Heart with Ring Reference -->
-            <div class="heart-ring-container">
-                <div class="rotating-ring">💍</div>
-                <div class="center-heart">❤️</div>
+            <div class="ring-animation">
+                <div class="ring-orbit">
+                    <span class="orbit-item">&#x1F48D;</span>
+                </div>
+                <div class="ring-center">&#x2764;&#xFE0F;</div>
             </div>
 
-            <p class="beyhive-text">🐝 Welcome to the Beyhive of Love 🐝</p>
-        </header>
+            <p class="beyhive-label" id="beyhiveLabel">Welcome to the Beyhive of Love</p>
 
-        <!-- Photo Gallery: Love on Top -->
-        <section class="gallery-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span class="crown-emoji">👑</span>
-                    Our Love on Top
-                    <span class="crown-emoji">👑</span>
-                </h2>
-                <p class="section-subtitle">"You're the one I love, you're the one I need"</p>
+            <div class="scroll-indicator">
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery" id="gallery">
+            <div class="section-heading">
+                <span class="heading-accent"></span>
+                <h2 class="heading-text">Our Love on Top</h2>
+                <p class="heading-sub">"You're the one I love, you're the one I need"</p>
             </div>
 
-            <div class="photo-grid">
-                <div class="photo-card" data-album="dangerously">
-                    <div class="gold-frame">
-                        <img src="images/photo1.jpg" alt="Our moment" class="photo-img" id="photo1">
-                        <div class="photo-placeholder">
-                            <div class="placeholder-content">
-                                <span class="placeholder-icon">💛</span>
-                                <p>Add photo1.jpg</p>
-                                <small>"Dangerously in Love"</small>
-                            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item" data-album="dangerously">
+                    <div class="item-frame">
+                        <img src="images/photo1.jpg" alt="Our moment together" class="gallery-img" loading="lazy">
+                        <div class="img-placeholder">
+                            <span>&#x1F49B;</span>
+                            <small>Dangerously in Love</small>
                         </div>
+                        <div class="frame-shine"></div>
                     </div>
-                    <div class="card-label">Dangerously in Love</div>
+                    <p class="item-caption">Dangerously in Love</p>
                 </div>
 
-                <div class="photo-card" data-album="halo">
-                    <div class="gold-frame featured">
-                        <img src="images/photo2.jpg" alt="Our moment" class="photo-img" id="photo2">
-                        <div class="photo-placeholder">
-                            <div class="placeholder-content">
-                                <span class="placeholder-icon">✨</span>
-                                <p>Add photo2.jpg</p>
-                                <small>"You're my Halo"</small>
-                            </div>
+                <div class="gallery-item featured" data-album="halo">
+                    <div class="item-frame">
+                        <img src="images/photo2.jpg" alt="Our special moment" class="gallery-img" loading="lazy">
+                        <div class="img-placeholder">
+                            <span>&#x2728;</span>
+                            <small>You're my Halo</small>
                         </div>
+                        <div class="frame-shine"></div>
                     </div>
-                    <div class="card-label">Halo</div>
+                    <p class="item-caption">Halo</p>
                 </div>
 
-                <div class="photo-card" data-album="renaissance">
-                    <div class="gold-frame">
-                        <img src="images/photo3.jpg" alt="Our moment" class="photo-img" id="photo3">
-                        <div class="photo-placeholder">
-                            <div class="placeholder-content">
-                                <span class="placeholder-icon">🌟</span>
-                                <p>Add photo3.jpg</p>
-                                <small>"Renaissance Love"</small>
-                            </div>
+                <div class="gallery-item" data-album="renaissance">
+                    <div class="item-frame">
+                        <img src="images/photo3.jpg" alt="Our moment together" class="gallery-img" loading="lazy">
+                        <div class="img-placeholder">
+                            <span>&#x1F31F;</span>
+                            <small>Renaissance Love</small>
                         </div>
+                        <div class="frame-shine"></div>
                     </div>
-                    <div class="card-label">Renaissance</div>
+                    <p class="item-caption">Renaissance</p>
                 </div>
             </div>
         </section>
 
-        <!-- Question Section: Single Ladies Reference -->
-        <section class="question-section">
-            <div class="question-card">
-                <div class="microphone-icon">🎤</div>
-                <h3 class="question-title">If You Liked It...</h3>
-                <p class="question-text">Will you be my Valentine?</p>
-                <p class="question-subtext">(then you should put a ring on it 💍)</p>
+        <!-- Question Section -->
+        <section class="proposal" id="proposal">
+            <div class="proposal-card">
+                <div class="vinyl-record" id="vinylRecord">
+                    <div class="vinyl-grooves"></div>
+                    <div class="vinyl-label">
+                        <span>B</span>
+                    </div>
+                </div>
 
-                <!-- Beyonce-Themed Buttons -->
-                <div class="button-container">
-                    <button class="bey-btn btn-xo" data-response="xo" data-song="XO">
-                        <span class="btn-icon">💕</span>
-                        <span class="btn-text">XO</span>
-                        <div class="btn-shimmer"></div>
+                <h3 class="proposal-lead">If You Liked It...</h3>
+                <h2 class="proposal-question">Will you be my Valentine?</h2>
+                <p class="proposal-hint">(then you should put a ring on it)</p>
+
+                <div class="response-buttons">
+                    <button class="btn btn-xo" data-response="xo">
+                        <span class="btn-label">XO</span>
+                        <span class="btn-sub">baby love me lights out</span>
                     </button>
-
-                    <button class="bey-btn btn-halo" data-response="halo" data-song="Halo">
-                        <span class="btn-icon">✨</span>
-                        <span class="btn-text">HALO</span>
-                        <div class="btn-shimmer"></div>
+                    <button class="btn btn-halo" data-response="halo">
+                        <span class="btn-label">Halo</span>
+                        <span class="btn-sub">you're my saving grace</span>
                     </button>
-
-                    <button class="bey-btn btn-crazy" data-response="crazy" data-song="Crazy in Love">
-                        <span class="btn-icon">👑</span>
-                        <span class="btn-text">CRAZY IN LOVE</span>
-                        <div class="btn-shimmer"></div>
+                    <button class="btn btn-crazy" data-response="crazy">
+                        <span class="btn-label">Crazy in Love</span>
+                        <span class="btn-sub">got me looking so crazy</span>
                     </button>
                 </div>
 
-                <!-- Easter Egg Counter -->
-                <div class="easter-egg-hint" id="easterEggHint">
-                    <small>🐝 Tap the crown 👑 | Tap photos & text for surprises! ✨</small>
-                </div>
+                <p class="easter-hint">tap the crown, photos, and vinyl for surprises</p>
             </div>
         </section>
 
         <!-- Response Section -->
-        <div class="response-section" id="responseSection">
-            <div class="response-card">
-                <h2 class="response-title" id="responseTitle"></h2>
-                <p class="response-lyric" id="responseLyric"></p>
-                <div class="response-icon" id="responseIcon"></div>
+        <section class="celebration" id="celebration">
+            <div class="celebration-card">
+                <div class="celebration-icon" id="celebrationIcon"></div>
+                <h2 class="celebration-title" id="celebrationTitle"></h2>
+                <p class="celebration-lyric" id="celebrationLyric"></p>
+                <div class="celebration-hearts">
+                    <span>&#x1F496;</span><span>&#x1F49B;</span><span>&#x2764;&#xFE0F;</span><span>&#x1F496;</span><span>&#x1F49B;</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <button class="player-toggle" id="playerToggle" aria-label="Toggle music player">
+            <span class="toggle-icon">&#x266B;</span>
+            <span class="toggle-text">Music</span>
+        </button>
+        <div class="player-drawer" id="playerDrawer">
+            <div class="player-header">
+                <h4>Now Playing</h4>
+                <button class="player-close" id="playerClose">&times;</button>
+            </div>
+            <div class="track-list" id="trackList">
+                <button class="track active" data-track="0">
+                    <span class="track-num">1</span>
+                    <span class="track-info">
+                        <span class="track-name">Crazy in Love</span>
+                        <span class="track-artist">Beyonce ft. Jay-Z</span>
+                    </span>
+                    <span class="track-playing"><span></span><span></span><span></span></span>
+                </button>
+                <button class="track" data-track="1">
+                    <span class="track-num">2</span>
+                    <span class="track-info">
+                        <span class="track-name">Halo</span>
+                        <span class="track-artist">Beyonce</span>
+                    </span>
+                    <span class="track-playing"><span></span><span></span><span></span></span>
+                </button>
+                <button class="track" data-track="2">
+                    <span class="track-num">3</span>
+                    <span class="track-info">
+                        <span class="track-name">XO</span>
+                        <span class="track-artist">Beyonce</span>
+                    </span>
+                    <span class="track-playing"><span></span><span></span><span></span></span>
+                </button>
+                <button class="track" data-track="3">
+                    <span class="track-num">4</span>
+                    <span class="track-info">
+                        <span class="track-name">Love on Top</span>
+                        <span class="track-artist">Beyonce</span>
+                    </span>
+                    <span class="track-playing"><span></span><span></span><span></span></span>
+                </button>
+                <button class="track" data-track="4">
+                    <span class="track-num">5</span>
+                    <span class="track-info">
+                        <span class="track-name">Dangerously in Love</span>
+                        <span class="track-artist">Beyonce</span>
+                    </span>
+                    <span class="track-playing"><span></span><span></span><span></span></span>
+                </button>
+            </div>
+            <div class="spotify-embed" id="spotifyEmbed">
+                <iframe
+                    id="spotifyPlayer"
+                    style="border-radius:12px"
+                    src="https://open.spotify.com/embed/track/0fdTXMBCagKhIHByFOGxJb?utm_source=generator&theme=0"
+                    width="100%"
+                    height="80"
+                    frameBorder="0"
+                    allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                ></iframe>
             </div>
         </div>
-
-        <!-- Hidden Easter Eggs -->
-        <div class="easter-egg-message" id="easterEggMessage"></div>
     </div>
 
-    <!-- Confetti Container -->
+    <!-- Confetti Layer -->
     <div id="confetti-container"></div>
 
-    <!-- Formation Flash -->
-    <div class="formation-flash" id="formationFlash"></div>
+    <!-- Flash Overlay -->
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <!-- Easter Egg Overlay -->
+    <div class="egg-overlay" id="eggOverlay">
+        <div class="egg-content" id="eggContent"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

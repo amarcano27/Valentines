@@ -1,509 +1,583 @@
-// ========== BEYONCÉ VALENTINE'S - QUEEN BEY JAVASCRIPT ==========
+// ============================================================
+// BEYONCE VALENTINE'S - INTERACTIVE ENGINE
+// Canvas particles, Spotify player, themes, sound FX, easter eggs
+// ============================================================
 
-// ===== AUDIO SYSTEM (Web Audio API) =====
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+(function () {
+    'use strict';
 
-function playSound(frequency, duration, type = 'sine') {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    // ---------- AUDIO SYSTEM ----------
+    let audioCtx = null;
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    function getAudioCtx() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
 
-    oscillator.frequency.value = frequency;
-    oscillator.type = type;
+    function playTone(freq, duration, type, volume) {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = freq;
+            osc.type = type || 'sine';
+            gain.gain.setValueAtTime(volume || 0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + duration);
+        } catch (e) {
+            // Audio not available
+        }
+    }
 
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+    function sfxClick() {
+        playTone(880, 0.06, 'sine', 0.1);
+        setTimeout(function () { playTone(1320, 0.04, 'sine', 0.08); }, 40);
+    }
 
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration);
-}
+    function sfxCelebration() {
+        var notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach(function (n, i) {
+            setTimeout(function () { playTone(n, 0.25, 'triangle', 0.12); }, i * 90);
+        });
+    }
 
-function playClickSound() {
-    playSound(800, 0.1, 'sine');
-    setTimeout(() => playSound(1200, 0.05, 'sine'), 50);
-}
+    function sfxEpic() {
+        var chords = [
+            { f: 261.63, d: 0.15 }, { f: 329.63, d: 0.15 },
+            { f: 392.00, d: 0.2 }, { f: 523.25, d: 0.25 },
+            { f: 659.25, d: 0.3 }, { f: 783.99, d: 0.35 },
+            { f: 1046.50, d: 0.4 }
+        ];
+        chords.forEach(function (c, i) {
+            setTimeout(function () { playTone(c.f, c.d, 'sawtooth', 0.08); }, i * 120);
+        });
+    }
 
-function playCelebrationSound() {
-    // Ascending notes celebration
-    const notes = [523.25, 587.33, 659.25, 783.99, 880.00];
-    notes.forEach((note, i) => {
-        setTimeout(() => playSound(note, 0.3, 'triangle'), i * 100);
-    });
-}
+    function sfxThemeSwitch() {
+        playTone(660, 0.1, 'sine', 0.08);
+        setTimeout(function () { playTone(880, 0.1, 'sine', 0.08); }, 80);
+        setTimeout(function () { playTone(1100, 0.15, 'triangle', 0.06); }, 160);
+    }
 
-function playCrazyInLoveSound() {
-    // EPIC sound for Crazy in Love button
-    const epicNotes = [
-        {freq: 523.25, dur: 0.2},
-        {freq: 659.25, dur: 0.2},
-        {freq: 783.99, dur: 0.3},
-        {freq: 1046.50, dur: 0.4},
-        {freq: 1318.51, dur: 0.5}
+    // ---------- SPOTIFY MUSIC PLAYER ----------
+    var spotifyTracks = [
+        '0fdTXMBCagKhIHByFOGxJb', // Crazy in Love
+        '4JehYebiI9JE8sR8MisGVb', // Halo
+        '3w2Jpteg2gHBRGR0M4cqdJ', // XO
+        '4hkS1BVSV8WGZPoamA1KAb', // Love on Top
+        '1mea3bSkSGXuIRvnydlB5b'  // Dangerously in Love 2
     ];
-    epicNotes.forEach((note, i) => {
-        setTimeout(() => playSound(note.freq, note.dur, 'sawtooth'), i * 150);
+
+    var currentTrack = 0;
+    var playerOpen = false;
+
+    function initMusicPlayer() {
+        var toggle = document.getElementById('playerToggle');
+        var drawer = document.getElementById('playerDrawer');
+        var close = document.getElementById('playerClose');
+        var tracks = document.querySelectorAll('.track');
+
+        toggle.addEventListener('click', function () {
+            playerOpen = !playerOpen;
+            drawer.classList.toggle('open', playerOpen);
+            sfxClick();
+        });
+
+        close.addEventListener('click', function () {
+            playerOpen = false;
+            drawer.classList.remove('open');
+        });
+
+        tracks.forEach(function (track) {
+            track.addEventListener('click', function () {
+                var idx = parseInt(this.getAttribute('data-track'));
+                selectTrack(idx);
+                sfxClick();
+            });
+        });
+    }
+
+    function selectTrack(idx) {
+        currentTrack = idx;
+        var iframe = document.getElementById('spotifyPlayer');
+        iframe.src = 'https://open.spotify.com/embed/track/' + spotifyTracks[idx] + '?utm_source=generator&theme=0';
+
+        document.querySelectorAll('.track').forEach(function (t, i) {
+            t.classList.toggle('active', i === idx);
+        });
+
+        // Spin vinyl when track selected
+        var vinyl = document.getElementById('vinylRecord');
+        vinyl.classList.add('spinning');
+    }
+
+    // ---------- THEME SYSTEM ----------
+    function initThemes() {
+        var toggle = document.getElementById('themeToggle');
+        var menu = document.getElementById('themeMenu');
+        var options = document.querySelectorAll('.theme-option');
+
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.classList.toggle('open');
+            sfxClick();
+        });
+
+        options.forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                var theme = this.getAttribute('data-theme');
+                document.body.setAttribute('data-theme', theme);
+
+                options.forEach(function (o) { o.classList.remove('active'); });
+                this.classList.add('active');
+
+                menu.classList.remove('open');
+                sfxThemeSwitch();
+
+                // Reinit particles with new colors
+                initParticles();
+            });
+        });
+
+        // Close menu on outside click
+        document.addEventListener('click', function () {
+            menu.classList.remove('open');
+        });
+    }
+
+    // ---------- CANVAS PARTICLE SYSTEM ----------
+    var canvas, ctx, particles, animId;
+    var PARTICLE_COUNT = 60;
+
+    function getThemeColors() {
+        var style = getComputedStyle(document.body);
+        return {
+            a: style.getPropertyValue('--particle-a').trim() || 'rgba(255,215,0,0.6)',
+            b: style.getPropertyValue('--particle-b').trim() || 'rgba(255,20,147,0.4)'
+        };
+    }
+
+    function initParticles() {
+        canvas = document.getElementById('particleCanvas');
+        ctx = canvas.getContext('2d');
+        resizeCanvas();
+
+        var colors = getThemeColors();
+        particles = [];
+        for (var i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(createParticle(colors));
+        }
+
+        if (animId) cancelAnimationFrame(animId);
+        animateParticles();
+    }
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function createParticle(colors) {
+        var useA = Math.random() > 0.5;
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2.5 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.3,
+            speedY: (Math.random() - 0.5) * 0.3,
+            color: useA ? colors.a : colors.b,
+            alpha: Math.random() * 0.5 + 0.1,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: Math.random() * 0.02 + 0.005
+        };
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(function (p) {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.pulse += p.pulseSpeed;
+
+            // Wrap edges
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            var currentAlpha = p.alpha * (0.5 + 0.5 * Math.sin(p.pulse));
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color.replace(/[\d.]+\)$/, currentAlpha + ')');
+            ctx.fill();
+        });
+
+        animId = requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('resize', function () {
+        resizeCanvas();
     });
-}
 
-// ===== FLOATING ELEMENTS (Crowns & Hearts) =====
-function createFloatingElements() {
-    const container = document.getElementById('floating-elements');
-    const elements = ['👑', '💕', '💖', '✨', '🐝'];
+    // ---------- SCROLL REVEAL (Intersection Observer) ----------
+    function initScrollReveal() {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
 
-    setInterval(() => {
-        const elem = document.createElement('div');
-        elem.className = 'float-element';
-        elem.textContent = elements[Math.floor(Math.random() * elements.length)];
-        elem.style.left = Math.random() * 100 + '%';
-        elem.style.top = Math.random() * 100 + '%';
-        elem.style.animationDelay = Math.random() * 2 + 's';
-        elem.style.animationDuration = (Math.random() * 4 + 6) + 's';
+        document.querySelectorAll('.gallery-item').forEach(function (item) {
+            observer.observe(item);
+        });
+    }
 
-        container.appendChild(elem);
+    // ---------- IMAGE LOADING ----------
+    function initImages() {
+        document.querySelectorAll('.gallery-img').forEach(function (img) {
+            function onLoaded() {
+                img.classList.add('loaded');
+                var placeholder = img.closest('.item-frame').querySelector('.img-placeholder');
+                if (placeholder) placeholder.classList.add('hidden');
+            }
 
-        setTimeout(() => elem.remove(), 12000);
-    }, 3000);
-}
+            img.addEventListener('load', onLoaded);
+            img.addEventListener('error', function () {
+                img.style.display = 'none';
+            });
 
-// ===== IMAGE LOADING =====
-function initImageLoading() {
-    document.querySelectorAll('.photo-img').forEach(img => {
-        img.addEventListener('load', function() {
-            console.log('Image loaded:', this.src);
-            this.classList.add('loaded');
-            const placeholder = this.closest('.gold-frame').querySelector('.photo-placeholder');
-            if (placeholder) {
-                placeholder.style.display = 'none';
+            if (img.complete && img.naturalWidth > 0) {
+                onLoaded();
+            }
+        });
+    }
+
+    // ---------- CONFETTI ----------
+    function spawnConfetti(count) {
+        var container = document.getElementById('confetti-container');
+        var themeColors = getComputedStyle(document.body);
+        var primary = themeColors.getPropertyValue('--primary').trim();
+        var secondary = themeColors.getPropertyValue('--secondary').trim();
+        var accent = themeColors.getPropertyValue('--accent').trim();
+        var colors = [primary, secondary, accent, '#FFB6C1', '#FFD700', '#FF69B4'];
+
+        for (var i = 0; i < count; i++) {
+            (function (index) {
+                setTimeout(function () {
+                    var piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    var w = Math.random() * 10 + 4;
+                    var h = Math.random() * 12 + 4;
+                    piece.style.left = Math.random() * 100 + '%';
+                    piece.style.width = w + 'px';
+                    piece.style.height = h + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.opacity = '1';
+
+                    if (Math.random() > 0.5) piece.style.borderRadius = '50%';
+
+                    var duration = Math.random() * 1.5 + 1.5;
+                    var drift = (Math.random() - 0.5) * 200;
+                    var rotation = Math.random() * 720;
+                    piece.style.transition = 'all ' + duration + 's cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+                    container.appendChild(piece);
+
+                    requestAnimationFrame(function () {
+                        piece.style.transform = 'translateY(' + window.innerHeight + 'px) translateX(' + drift + 'px) rotate(' + rotation + 'deg)';
+                        piece.style.opacity = '0';
+                    });
+
+                    setTimeout(function () { piece.remove(); }, (duration + 0.5) * 1000);
+                }, index * 15);
+            })(i);
+        }
+    }
+
+    // ---------- FLOATING EMOJIS ----------
+    function floatEmojis(emojis, count) {
+        for (var i = 0; i < count; i++) {
+            (function (index) {
+                setTimeout(function () {
+                    var el = document.createElement('div');
+                    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.style.cssText = 'position:fixed;font-size:' + (Math.random() * 30 + 20) + 'px;left:' + (Math.random() * 100) + '%;bottom:-60px;z-index:9999;pointer-events:none;transition:all 3.5s cubic-bezier(0.25,0.46,0.45,0.94);filter:drop-shadow(0 0 8px rgba(255,215,0,0.5));';
+                    document.body.appendChild(el);
+
+                    requestAnimationFrame(function () {
+                        el.style.bottom = '110vh';
+                        el.style.transform = 'translateX(' + (Math.random() * 150 - 75) + 'px) rotate(' + (Math.random() * 360) + 'deg)';
+                    });
+
+                    setTimeout(function () { el.remove(); }, 4000);
+                }, index * 60);
+            })(i);
+        }
+    }
+
+    // ---------- SPARKLE BURST ----------
+    function sparkleBurst() {
+        var sparkles = ['\u2728', '\u2B50', '\uD83D\uDCAB', '\uD83C\uDF1F'];
+        for (var i = 0; i < 24; i++) {
+            (function (index) {
+                setTimeout(function () {
+                    var s = document.createElement('div');
+                    s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                    s.style.cssText = 'position:fixed;font-size:1.5rem;left:50%;top:50%;z-index:9999;pointer-events:none;transition:all 1.2s ease-out;opacity:1;';
+                    document.body.appendChild(s);
+
+                    var angle = (Math.PI * 2 * index) / 24;
+                    var dist = Math.random() * 200 + 150;
+
+                    requestAnimationFrame(function () {
+                        s.style.transform = 'translate(' + (Math.cos(angle) * dist) + 'px,' + (Math.sin(angle) * dist) + 'px) rotate(' + (Math.random() * 360) + 'deg)';
+                        s.style.opacity = '0';
+                    });
+
+                    setTimeout(function () { s.remove(); }, 1500);
+                }, index * 25);
+            })(i);
+        }
+    }
+
+    // ---------- FLASH EFFECT ----------
+    function flash() {
+        var overlay = document.getElementById('flashOverlay');
+        overlay.classList.add('active');
+        setTimeout(function () { overlay.classList.remove('active'); }, 600);
+    }
+
+    // ---------- EASTER EGG OVERLAY ----------
+    function showEgg(text) {
+        var overlay = document.getElementById('eggOverlay');
+        var content = document.getElementById('eggContent');
+        content.innerHTML = text;
+        overlay.classList.add('show');
+
+        setTimeout(function () {
+            overlay.classList.remove('show');
+        }, 2800);
+
+        // Allow closing by tap
+        overlay.addEventListener('click', function handler() {
+            overlay.classList.remove('show');
+            overlay.removeEventListener('click', handler);
+        });
+    }
+
+    // ---------- RESPONSE BUTTONS ----------
+    function initButtons() {
+        document.querySelectorAll('.btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var response = this.getAttribute('data-response');
+                sfxClick();
+
+                if (response === 'crazy') {
+                    handleCrazy();
+                } else {
+                    handleResponse(response);
+                }
+            });
+        });
+    }
+
+    function handleResponse(type) {
+        var proposal = document.getElementById('proposal');
+        var celebration = document.getElementById('celebration');
+        var title = document.getElementById('celebrationTitle');
+        var lyric = document.getElementById('celebrationLyric');
+        var icon = document.getElementById('celebrationIcon');
+
+        proposal.style.opacity = '0';
+        proposal.style.transform = 'scale(0.95)';
+        proposal.style.transition = 'all 0.5s ease';
+
+        setTimeout(function () {
+            proposal.style.display = 'none';
+
+            if (type === 'xo') {
+                title.textContent = 'XO';
+                lyric.textContent = '"In the darkest night hour, I\'ll search through the crowd. Your face is all that I see."';
+                icon.textContent = '\uD83D\uDC95\u2728\uD83D\uDC95';
+                selectTrack(2); // XO
+            } else if (type === 'halo') {
+                title.textContent = 'You\'re My Halo';
+                lyric.textContent = '"Baby, I can feel your halo. You know you\'re my saving grace."';
+                icon.textContent = '\u2728\uD83D\uDC51\u2728';
+                selectTrack(1); // Halo
+            }
+
+            celebration.classList.add('show');
+            celebration.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            sfxCelebration();
+            spawnConfetti(80);
+            floatEmojis(['\uD83D\uDC51', '\uD83D\uDC95', '\u2728', '\uD83D\uDC96'], 20);
+
+            // Open music player
+            var drawer = document.getElementById('playerDrawer');
+            drawer.classList.add('open');
+            playerOpen = true;
+        }, 500);
+    }
+
+    function handleCrazy() {
+        var proposal = document.getElementById('proposal');
+        var celebration = document.getElementById('celebration');
+        var title = document.getElementById('celebrationTitle');
+        var lyric = document.getElementById('celebrationLyric');
+        var icon = document.getElementById('celebrationIcon');
+
+        // Screen shake
+        document.body.style.animation = 'screenShake 0.5s ease-in-out';
+        setTimeout(function () { document.body.style.animation = ''; }, 500);
+
+        flash();
+        sfxEpic();
+
+        proposal.style.opacity = '0';
+        proposal.style.transform = 'scale(0.95)';
+        proposal.style.transition = 'all 0.5s ease';
+
+        setTimeout(function () {
+            proposal.style.display = 'none';
+
+            title.textContent = 'CRAZY IN LOVE';
+            lyric.textContent = '"Got me looking so crazy right now, your love\'s got me looking so crazy right now!"';
+            icon.textContent = '\uD83D\uDC51\uD83D\uDC95\uD83C\uDFA4\u2728\uD83D\uDC96';
+
+            celebration.classList.add('show');
+            celebration.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            selectTrack(0); // Crazy in Love
+
+            // MEGA celebration
+            spawnConfetti(150);
+            floatEmojis(['\uD83D\uDC51', '\uD83D\uDC95', '\u2728', '\uD83D\uDC96', '\uD83D\uDC9B'], 40);
+            sparkleBurst();
+
+            // Wave 2
+            setTimeout(function () {
+                spawnConfetti(80);
+                sfxCelebration();
+            }, 2000);
+
+            // Wave 3
+            setTimeout(function () {
+                spawnConfetti(60);
+                floatEmojis(['\uD83D\uDC51', '\u2764\uFE0F', '\uD83D\uDC8D'], 20);
+            }, 3500);
+
+            // Open player
+            var drawer = document.getElementById('playerDrawer');
+            drawer.classList.add('open');
+            playerOpen = true;
+        }, 600);
+    }
+
+    // ---------- EASTER EGGS ----------
+    var crownClicks = 0;
+    var beyhiveClicks = 0;
+
+    function initEasterEggs() {
+        // Crown tap
+        var crown = document.getElementById('crownIcon');
+        crown.addEventListener('click', function () {
+            crownClicks++;
+            playTone(800 + crownClicks * 100, 0.08, 'square', 0.06);
+
+            if (crownClicks >= 5) {
+                showEgg('BEYHIVE ACTIVATED');
+                floatEmojis(['\uD83D\uDC1D', '\uD83D\uDC51', '\uD83C\uDF6F'], 15);
+                sfxCelebration();
+                crownClicks = 0;
             }
         });
 
-        img.addEventListener('error', function() {
-            console.log('Image error:', this.src);
-            this.style.display = 'none';
-        });
-
-        // Check if image is already loaded (from cache)
-        if (img.complete && img.naturalWidth > 0) {
-            console.log('Image already loaded:', img.src);
-            img.classList.add('loaded');
-            const placeholder = img.closest('.gold-frame').querySelector('.photo-placeholder');
-            if (placeholder) {
-                placeholder.style.display = 'none';
-            }
-        } else {
-            console.log('Image waiting to load:', img.src);
-        }
-    });
-}
-
-// ===== BUTTON HANDLERS =====
-let clickCount = 0;
-
-function initButtons() {
-    document.querySelectorAll('.bey-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const response = this.getAttribute('data-response');
-            const song = this.getAttribute('data-song');
-
-            playClickSound();
-
-            if (response === 'crazy') {
-                // SPECIAL CRAZY IN LOVE CELEBRATION
-                handleCrazyInLove(song);
-            } else {
-                handleResponse(response, song);
+        // Beyhive label
+        var label = document.getElementById('beyhiveLabel');
+        label.addEventListener('click', function () {
+            beyhiveClicks++;
+            if (beyhiveClicks >= 3) {
+                showEgg('"Who run the world? GIRLS!"');
+                floatEmojis(['\uD83D\uDC51', '\uD83D\uDCAA', '\u2728'], 10);
+                sfxCelebration();
+                beyhiveClicks = 0;
             }
         });
-    });
-}
 
-// ===== RESPONSE HANDLING =====
-function handleResponse(response, song) {
-    const questionSection = document.querySelector('.question-section');
-    const responseSection = document.getElementById('responseSection');
-    const responseTitle = document.getElementById('responseTitle');
-    const responseLyric = document.getElementById('responseLyric');
-    const responseIcon = document.getElementById('responseIcon');
+        // Vinyl tap
+        var vinyl = document.getElementById('vinylRecord');
+        vinyl.addEventListener('click', function () {
+            vinyl.classList.toggle('spinning');
+            playTone(440, 0.2, 'sine', 0.1);
+            showEgg('"Check on it!"');
+        });
 
-    questionSection.style.opacity = '0';
-    questionSection.style.transform = 'scale(0.9)';
+        // Photo cards
+        document.querySelectorAll('.gallery-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                sfxClick();
+                var album = this.getAttribute('data-album');
+                if (album === 'dangerously') {
+                    showEgg('"Dangerously in Love"');
+                } else if (album === 'halo') {
+                    showEgg('"Remember those walls I built? Baby, they\'re tumbling down!"');
+                } else if (album === 'renaissance') {
+                    showEgg('"RENAISSANCE"\nA New Era of Love');
+                }
+            });
+        });
 
-    setTimeout(() => {
-        questionSection.style.display = 'none';
+        // Konami code
+        var konamiBuffer = [];
+        var konamiSeq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
-        let title, lyric, icon;
-
-        if (response === 'xo') {
-            title = "XO! 💕";
-            lyric = '"In the darkest night hour, I\'ll search through the crowd. Your face is all that I see"';
-            icon = '💕✨💕';
-        } else if (response === 'halo') {
-            title = "You're My HALO! ✨";
-            lyric = '"Baby, I can feel your halo. You know you\'re my saving grace"';
-            icon = '✨👑✨';
-        }
-
-        responseTitle.textContent = title;
-        responseLyric.textContent = lyric;
-        responseIcon.textContent = icon;
-
-        responseSection.classList.add('show');
-
-        playCelebrationSound();
-        createGoldConfetti(50);
-        createFloatingCrowns(15);
-
-    }, 500);
-}
-
-// ===== CRAZY IN LOVE MEGA CELEBRATION =====
-function handleCrazyInLove(song) {
-    const questionSection = document.querySelector('.question-section');
-    const responseSection = document.getElementById('responseSection');
-    const responseTitle = document.getElementById('responseTitle');
-    const responseLyric = document.getElementById('responseLyric');
-    const responseIcon = document.getElementById('responseIcon');
-    const formationFlash = document.getElementById('formationFlash');
-
-    // SCREEN SHAKE
-    document.body.style.animation = 'screenShake 0.5s ease-in-out';
-
-    // FORMATION FLASH
-    formationFlash.classList.add('active');
-    setTimeout(() => formationFlash.classList.remove('active'), 500);
-
-    // PLAY EPIC SOUND
-    playCrazyInLoveSound();
-
-    questionSection.style.opacity = '0';
-    questionSection.style.transform = 'scale(0.9)';
-
-    setTimeout(() => {
-        questionSection.style.display = 'none';
-
-        responseTitle.textContent = "CRAZY IN LOVE! 👑💕👑";
-        responseLyric.textContent = '"Got me looking so crazy right now, your love\'s got me looking so crazy right now!"';
-        responseIcon.textContent = '👑💕🎤✨💖';
-
-        responseSection.classList.add('show');
-
-        // MASSIVE CELEBRATION
-        createGoldConfetti(200);
-        createFloatingCrowns(50);
-        createFloatingHearts(30);
-        createSparkleExplosion();
-
-        // Continue celebration
-        setTimeout(() => {
-            createGoldConfetti(100);
-            playCelebrationSound();
-        }, 2000);
-
-        setTimeout(() => {
-            createGoldConfetti(100);
-            createFloatingCrowns(30);
-        }, 4000);
-
-    }, 600);
-}
-
-// Add screen shake animation
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `
-    @keyframes screenShake {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        10% { transform: translate(-5px, 2px) rotate(-1deg); }
-        20% { transform: translate(5px, -2px) rotate(1deg); }
-        30% { transform: translate(-5px, 2px) rotate(-1deg); }
-        40% { transform: translate(5px, -2px) rotate(1deg); }
-        50% { transform: translate(-5px, 2px) rotate(-1deg); }
-        60% { transform: translate(5px, -2px) rotate(1deg); }
-        70% { transform: translate(-5px, 2px) rotate(-1deg); }
-        80% { transform: translate(5px, -2px) rotate(1deg); }
-        90% { transform: translate(-5px, 2px) rotate(-1deg); }
-    }
-`;
-document.head.appendChild(shakeStyle);
-
-// ===== GOLD CONFETTI =====
-function createGoldConfetti(count) {
-    const container = document.getElementById('confetti-container');
-    const colors = ['#FFD700', '#DAA520', '#FFA500', '#FF1493', '#B76E79', '#FFB6C1'];
-
-    for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.width = (Math.random() * 15 + 5) + 'px';
-            confetti.style.height = (Math.random() * 15 + 5) + 'px';
-            confetti.style.opacity = '1';
-            confetti.style.animation = `confettiFall ${Math.random() * 2 + 2}s ease-out forwards`;
-
-            // Random shapes
-            if (Math.random() > 0.5) {
-                confetti.style.borderRadius = '50%';
-            }
-
-            container.appendChild(confetti);
-
-            setTimeout(() => confetti.remove(), 4000);
-        }, i * 20);
-    }
-}
-
-const confettiStyle = document.createElement('style');
-confettiStyle.textContent = `
-    @keyframes confettiFall {
-        0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(confettiStyle);
-
-// ===== FLOATING CROWNS =====
-function createFloatingCrowns(count) {
-    for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-            const crown = document.createElement('div');
-            crown.textContent = '👑';
-            crown.style.position = 'fixed';
-            crown.style.fontSize = (Math.random() * 40 + 30) + 'px';
-            crown.style.left = Math.random() * 100 + '%';
-            crown.style.bottom = '-100px';
-            crown.style.zIndex = '9999';
-            crown.style.pointerEvents = 'none';
-            crown.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
-            crown.style.transition = 'all 4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-
-            document.body.appendChild(crown);
-
-            setTimeout(() => {
-                crown.style.bottom = '120vh';
-                crown.style.transform = `
-                    translateX(${Math.random() * 200 - 100}px)
-                    rotate(${Math.random() * 720}deg)
-                    scale(${Math.random() * 0.5 + 0.8})
-                `;
-                crown.style.opacity = '1';
-            }, 50);
-
-            setTimeout(() => crown.remove(), 4500);
-        }, i * 80);
-    }
-}
-
-// ===== FLOATING HEARTS =====
-function createFloatingHearts(count) {
-    const hearts = ['💕', '💖', '💝', '💗', '💓', '❤️'];
-
-    for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-            const heart = document.createElement('div');
-            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.position = 'fixed';
-            heart.style.fontSize = (Math.random() * 35 + 25) + 'px';
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.bottom = '-100px';
-            heart.style.zIndex = '9999';
-            heart.style.pointerEvents = 'none';
-            heart.style.filter = 'drop-shadow(0 0 12px rgba(255, 20, 147, 0.6))';
-            heart.style.transition = 'all 4s ease-out';
-
-            document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.style.bottom = '120vh';
-                heart.style.transform = `
-                    translateX(${Math.random() * 150 - 75}px)
-                    rotate(${Math.random() * 360}deg)
-                `;
-                heart.style.opacity = '1';
-            }, 50);
-
-            setTimeout(() => heart.remove(), 4500);
-        }, i * 100);
-    }
-}
-
-// ===== SPARKLE EXPLOSION =====
-function createSparkleExplosion() {
-    const sparkles = ['✨', '⭐', '💫', '🌟'];
-
-    for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-            const sparkle = document.createElement('div');
-            sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-            sparkle.style.position = 'fixed';
-            sparkle.style.fontSize = '2rem';
-            sparkle.style.left = '50%';
-            sparkle.style.top = '50%';
-            sparkle.style.zIndex = '9999';
-            sparkle.style.pointerEvents = 'none';
-            sparkle.style.transition = 'all 1.5s ease-out';
-            sparkle.style.opacity = '1';
-
-            document.body.appendChild(sparkle);
-
-            const angle = (Math.PI * 2 * i) / 30;
-            const distance = Math.random() * 300 + 200;
-
-            setTimeout(() => {
-                sparkle.style.transform = `
-                    translate(
-                        ${Math.cos(angle) * distance}px,
-                        ${Math.sin(angle) * distance}px
-                    )
-                    rotate(${Math.random() * 720}deg)
-                `;
-                sparkle.style.opacity = '0';
-            }, 50);
-
-            setTimeout(() => sparkle.remove(), 2000);
-        }, i * 30);
-    }
-}
-
-// ===== CROWN CLICK EASTER EGG =====
-function initCrownEasterEgg() {
-    const crown = document.querySelector('.crown-top');
-
-    crown.addEventListener('click', function() {
-        clickCount++;
-        playSound(1000 + (clickCount * 100), 0.1, 'square');
-
-        if (clickCount === 5) {
-            showEasterEggMessage("🐝 BEYHIVE ACTIVATED! 🐝");
-            createFloatingCrowns(20);
-            playCelebrationSound();
-            clickCount = 0;
-        }
-    });
-}
-
-// ===== KONAMI CODE: FORMATION MODE =====
-let konamiCode = [];
-const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-
-document.addEventListener('keydown', (e) => {
-    konamiCode.push(e.key);
-    konamiCode = konamiCode.slice(-10);
-
-    if (konamiCode.join(',') === konamiSequence.join(',')) {
-        activateFormationMode();
-        konamiCode = [];
-    }
-});
-
-function activateFormationMode() {
-    const formationFlash = document.getElementById('formationFlash');
-
-    showEasterEggMessage("👑 FORMATION! 👑<br>OKAY LADIES NOW LET'S GET IN FORMATION!");
-
-    // Flash effect
-    formationFlash.classList.add('active');
-    setTimeout(() => formationFlash.classList.remove('active'), 500);
-
-    // Massive celebration
-    playCrazyInLoveSound();
-
-    for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-            createGoldConfetti(50);
-            createFloatingCrowns(15);
-            playSound(523.25 + (i * 100), 0.3, 'sawtooth');
-        }, i * 500);
-    }
-}
-
-// ===== EASTER EGG MESSAGE DISPLAY =====
-function showEasterEggMessage(message) {
-    const eggMessage = document.getElementById('easterEggMessage');
-    eggMessage.innerHTML = message;
-    eggMessage.classList.add('show');
-
-    setTimeout(() => {
-        eggMessage.classList.remove('show');
-    }, 3000);
-}
-
-// ===== PHOTO CARD INTERACTIONS =====
-function initPhotoCardEffects() {
-    document.querySelectorAll('.photo-card').forEach(card => {
-        card.addEventListener('click', function() {
-            playClickSound();
-            const album = this.getAttribute('data-album');
-
-            let message = '';
-            if (album === 'dangerously') {
-                message = '🎵 "Dangerously in Love" 🎵';
-            } else if (album === 'halo') {
-                message = '✨ "Remember those walls I built? Well, baby, they\'re tumbling down!" ✨';
-            } else if (album === 'renaissance') {
-                message = '🌟 "RENAISSANCE" 🌟<br>A New Era of Love!';
-            }
-
-            if (message) {
-                showEasterEggMessage(message);
+        document.addEventListener('keydown', function (e) {
+            konamiBuffer.push(e.key);
+            konamiBuffer = konamiBuffer.slice(-10);
+            if (konamiBuffer.join(',') === konamiSeq.join(',')) {
+                showEgg('FORMATION\nOKAY LADIES NOW LET\'S GET IN FORMATION!');
+                flash();
+                sfxEpic();
+                for (var w = 0; w < 5; w++) {
+                    (function (wave) {
+                        setTimeout(function () {
+                            spawnConfetti(40);
+                            floatEmojis(['\uD83D\uDC51', '\uD83D\uDC1D', '\u2728'], 10);
+                        }, wave * 500);
+                    })(w);
+                }
+                konamiBuffer = [];
             }
         });
+    }
+
+    // ---------- INIT ----------
+    document.addEventListener('DOMContentLoaded', function () {
+        initParticles();
+        initScrollReveal();
+        initImages();
+        initButtons();
+        initMusicPlayer();
+        initThemes();
+        initEasterEggs();
+
+        // Soft welcome tone
+        setTimeout(function () {
+            playTone(659.25, 0.4, 'triangle', 0.06);
+        }, 1500);
     });
-}
 
-// ===== HIDDEN LYRICS EASTER EGG =====
-let secretClicks = 0;
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('beyhive-text')) {
-        secretClicks++;
-        if (secretClicks === 3) {
-            showEasterEggMessage('🐝 "Who run the world? GIRLS!" 🐝');
-            createFloatingCrowns(10);
-            playCelebrationSound();
-            secretClicks = 0;
-        }
-    }
-});
-
-// ===== MICROPHONE EASTER EGG =====
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('microphone-icon')) {
-        playSound(800, 0.3, 'sine');
-        showEasterEggMessage('🎤 "Check on it!" 🎤');
-        e.target.style.animation = 'none';
-        setTimeout(() => {
-            e.target.style.animation = 'micSwing 2s ease-in-out infinite';
-        }, 100);
-    }
-});
-
-// ===== INITIALIZE EVERYTHING =====
-document.addEventListener('DOMContentLoaded', () => {
-    createFloatingElements();
-    initImageLoading();
-    initButtons();
-    initCrownEasterEgg();
-    initPhotoCardEffects();
-
-    // Welcome message
-    setTimeout(() => {
-        playSound(659.25, 0.5, 'triangle');
-    }, 1000);
-
-    console.log('👑 BEYONCÉ VALENTINE\'S LOADED 👑');
-    console.log('🐝 MOBILE EASTER EGGS:');
-    console.log('- TAP the crown 5 times → Beyhive!');
-    console.log('- TAP "Welcome to the Beyhive" 3 times → Formation!');
-    console.log('- TAP the microphone → Surprise!');
-    console.log('- TAP any photo → Lyrics!');
-    console.log('- TAP "CRAZY IN LOVE" → ULTIMATE CELEBRATION!');
-    console.log('💕 Enjoy the Queen Bey experience!');
-});
+})();
