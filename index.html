@@ -3,85 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine? 💕</title>
+    <title>💕 Will You Be My Valentine?</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated Background Elements -->
+    <div class="bg-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div id="particles-container"></div>
+
+    <!-- Main Content -->
     <div class="container">
-        <!-- Floating hearts background -->
-        <div class="hearts-container">
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-            <div class="heart"></div>
-        </div>
-
-        <!-- Main content -->
-        <div class="content">
-            <!-- Photo Gallery Section -->
-            <div class="photo-gallery">
-                <div class="photo-frame heart-frame">
-                    <img src="images/photo1.jpg" alt="Special moment" class="gallery-photo" id="photo1">
-                    <div class="photo-placeholder">
-                        <span>💕</span>
-                        <p>Add photo1.jpg</p>
-                    </div>
-                </div>
-                <div class="photo-frame circle-frame">
-                    <img src="images/photo2.jpg" alt="Special moment" class="gallery-photo" id="photo2">
-                    <div class="photo-placeholder">
-                        <span>💖</span>
-                        <p>Add photo2.jpg</p>
-                    </div>
-                </div>
-                <div class="photo-frame heart-frame">
-                    <img src="images/photo3.jpg" alt="Special moment" class="gallery-photo" id="photo3">
-                    <div class="photo-placeholder">
-                        <span>💝</span>
-                        <p>Add photo3.jpg</p>
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="glass-card hero-card">
+                <div class="sparkle-effect"></div>
+                <h1 class="main-title">
+                    <span class="title-word">Will</span>
+                    <span class="title-word">You</span>
+                    <span class="title-word">Be</span>
+                    <span class="title-word">My</span>
+                    <span class="title-word">Valentine?</span>
+                </h1>
+                <div class="heart-container">
+                    <div class="beating-heart">
+                        <svg viewBox="0 0 32 29.6">
+                            <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                            c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+                        </svg>
                     </div>
                 </div>
             </div>
+        </header>
 
-            <div class="question-box">
-                <h1 class="question">Will you be my Valentine?</h1>
-                <div class="heart-icon">💖</div>
-            </div>
-
-            <div class="buttons-container">
-                <button class="btn btn-yes" onclick="handleResponse('yes')">
-                    Yes
-                </button>
-                <button class="btn btn-yes-big" onclick="handleResponse('YES')">
-                    YES
-                </button>
-                <button class="btn btn-forever" onclick="handleResponse('forever')">
-                    FOREVER
-                </button>
-            </div>
-
-            <!-- Response message (hidden initially) -->
-            <div id="response-message" class="response-message hidden">
-                <div class="celebration">
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
-                    <div class="confetti"></div>
+        <!-- Photo Gallery -->
+        <section class="photo-gallery-section">
+            <h2 class="section-title">Our Moments Together</h2>
+            <div class="gallery-grid">
+                <div class="glass-card photo-card" data-tilt>
+                    <div class="photo-frame">
+                        <img src="images/photo1.jpg" alt="Special moment" class="gallery-photo" id="photo1">
+                        <div class="photo-placeholder">
+                            <div class="placeholder-icon">💕</div>
+                            <p>Add photo1.jpg</p>
+                        </div>
+                    </div>
+                    <div class="photo-shine"></div>
                 </div>
-                <h2 id="response-text"></h2>
-                <div class="sparkles">✨✨✨</div>
+
+                <div class="glass-card photo-card" data-tilt>
+                    <div class="photo-frame">
+                        <img src="images/photo2.jpg" alt="Special moment" class="gallery-photo" id="photo2">
+                        <div class="photo-placeholder">
+                            <div class="placeholder-icon">💖</div>
+                            <p>Add photo2.jpg</p>
+                        </div>
+                    </div>
+                    <div class="photo-shine"></div>
+                </div>
+
+                <div class="glass-card photo-card" data-tilt>
+                    <div class="photo-frame">
+                        <img src="images/photo3.jpg" alt="Special moment" class="gallery-photo" id="photo3">
+                        <div class="photo-placeholder">
+                            <div class="placeholder-icon">💝</div>
+                            <p>Add photo3.jpg</p>
+                        </div>
+                    </div>
+                    <div class="photo-shine"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Section -->
+        <section class="question-section">
+            <div class="glass-card question-card">
+                <h3 class="question-text">So... what do you say?</h3>
+                <div class="button-group">
+                    <button class="response-btn btn-yes" data-response="yes">
+                        <span class="btn-text">Yes! 💕</span>
+                        <span class="btn-glow"></span>
+                    </button>
+                    <button class="response-btn btn-absolutely" data-response="YES">
+                        <span class="btn-text">Absolutely! 💖</span>
+                        <span class="btn-glow"></span>
+                    </button>
+                    <button class="response-btn btn-forever" data-response="forever">
+                        <span class="btn-text">Forever! 💝</span>
+                        <span class="btn-glow"></span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Response Message -->
+        <div class="response-container" id="responseContainer">
+            <div class="glass-card response-card">
+                <h2 id="responseMessage"></h2>
+                <div class="confetti-container" id="confettiContainer"></div>
             </div>
         </div>
     </div>
