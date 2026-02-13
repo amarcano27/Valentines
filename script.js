@@ -570,21 +570,21 @@
         var btn = document.getElementById('musicStartBtn');
 
         btn.addEventListener('click', function () {
+            // Hide overlay
             overlay.classList.add('hidden');
 
             // Start vinyl spinning
             var vinyl = document.getElementById('vinylRecord');
             vinyl.classList.add('spinning');
 
-            // Reload iframe with autoplay to force playback
+            // Force iframe reload with autoplay AFTER user interaction
             var iframe = document.getElementById('spotifyPlayer');
-            var currentSrc = iframe.src;
-            if (currentSrc.indexOf('autoplay=1') === -1) {
-                iframe.src = currentSrc + '&autoplay=1';
-            } else {
-                // Force reload
-                iframe.src = currentSrc;
-            }
+            var trackId = spotifyTracks[0]; // Start with Crazy in Love
+
+            // Add a small delay to ensure user interaction is registered
+            setTimeout(function () {
+                iframe.src = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0&autoplay=1';
+            }, 100);
 
             // Play welcome tone
             setTimeout(function () {
@@ -592,6 +592,13 @@
             }, 200);
 
             sfxClick();
+        });
+
+        // Also allow clicking anywhere on the overlay to start
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) {
+                btn.click();
+            }
         });
     }
 
