@@ -522,7 +522,7 @@
         var roastPlayer = document.getElementById('roastPlayer');
         var roastCloseBtn = document.getElementById('roastCloseBtn');
 
-        function showNoStep(step) {
+        function setNoContent(step) {
             var data = noSteps[step];
             noEmoji.textContent = data.emoji;
             noTitle.textContent = data.title;
@@ -532,8 +532,11 @@
             noEmoji.style.animation = 'none';
             noEmoji.offsetHeight; // force reflow
             noEmoji.style.animation = 'noShake 0.6s ease-in-out';
+        }
 
-            // Bounce the card
+        function bounceCard() {
+            // Bounce effect for step transitions (not initial open)
+            noCard.style.transition = 'transform 0.3s var(--ease-spring)';
             noCard.style.transform = 'scale(0.9)';
             setTimeout(function () {
                 noCard.style.transform = 'scale(1) translateY(0)';
@@ -542,18 +545,30 @@
             // Screen shake
             document.body.style.animation = 'screenShake 0.4s ease-in-out';
             setTimeout(function () { document.body.style.animation = ''; }, 400);
-
-            playTone(200 - step * 40, 0.3, 'sawtooth', 0.1);
         }
 
         function openNoOverlay() {
             noStep = 0;
-            showNoStep(0);
+
+            // Clear inline transforms so CSS entrance animation works
+            noCard.style.transform = '';
+            noCard.style.transition = '';
+
+            setNoContent(0);
+            playTone(200, 0.3, 'sawtooth', 0.1);
+
             noOverlay.classList.add('show');
         }
 
         function closeNoOverlay() {
             noOverlay.classList.remove('show');
+
+            // Reset inline styles after close transition finishes
+            setTimeout(function () {
+                noCard.style.transform = '';
+                noCard.style.transition = '';
+            }, 600);
+
             sfxClick();
         }
 
@@ -563,10 +578,16 @@
             sfxClick();
 
             if (noStep < noSteps.length) {
-                showNoStep(noStep);
+                setNoContent(noStep);
+                bounceCard();
+                playTone(200 - noStep * 40, 0.3, 'sawtooth', 0.1);
             } else {
                 // All confirmations done - show the roast!
                 noOverlay.classList.remove('show');
+                setTimeout(function () {
+                    noCard.style.transform = '';
+                    noCard.style.transition = '';
+                }, 600);
                 showRoast();
             }
         });
