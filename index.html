@@ -3,115 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💕 Will You Be My Valentine?</title>
+    <title>👑 Crazy in Love with You 💕</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Animated Background Elements -->
-    <div class="bg-animation">
-        <div class="gradient-orb orb-1"></div>
-        <div class="gradient-orb orb-2"></div>
-        <div class="gradient-orb orb-3"></div>
-    </div>
+    <!-- Honeycomb Background Pattern -->
+    <div class="honeycomb-bg"></div>
 
-    <!-- Floating Particles -->
-    <div id="particles-container"></div>
+    <!-- Floating Crowns & Hearts -->
+    <div id="floating-elements"></div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Hero Section -->
-        <header class="hero">
-            <div class="glass-card hero-card">
-                <div class="sparkle-effect"></div>
-                <h1 class="main-title">
-                    <span class="title-word">Will</span>
-                    <span class="title-word">You</span>
-                    <span class="title-word">Be</span>
-                    <span class="title-word">My</span>
-                    <span class="title-word">Valentine?</span>
-                </h1>
-                <div class="heart-container">
-                    <div class="beating-heart">
-                        <svg viewBox="0 0 32 29.6">
-                            <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-                            c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
-                        </svg>
-                    </div>
-                </div>
+    <!-- Spotlight Effect -->
+    <div class="spotlight"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- HERO: Crazy in Love -->
+        <header class="hero-section">
+            <div class="crown-top">👑</div>
+            <h1 class="main-title">
+                <span class="word gold-text">Crazy</span>
+                <span class="word">in</span>
+                <span class="word rose-gold-text">Love</span>
+            </h1>
+            <h2 class="subtitle">with You, My Queen 💕</h2>
+
+            <!-- Animated Heart with Ring Reference -->
+            <div class="heart-ring-container">
+                <div class="rotating-ring">💍</div>
+                <div class="center-heart">❤️</div>
             </div>
+
+            <p class="beyhive-text">🐝 Welcome to the Beyhive of Love 🐝</p>
         </header>
 
-        <!-- Photo Gallery -->
-        <section class="photo-gallery-section">
-            <h2 class="section-title">Our Moments Together</h2>
-            <div class="gallery-grid">
-                <div class="glass-card photo-card" data-tilt>
-                    <div class="photo-frame">
-                        <img src="images/photo1.jpg" alt="Special moment" class="gallery-photo" id="photo1">
+        <!-- Photo Gallery: Love on Top -->
+        <section class="gallery-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="crown-emoji">👑</span>
+                    Our Love on Top
+                    <span class="crown-emoji">👑</span>
+                </h2>
+                <p class="section-subtitle">"You're the one I love, you're the one I need"</p>
+            </div>
+
+            <div class="photo-grid">
+                <div class="photo-card" data-album="dangerously">
+                    <div class="gold-frame">
+                        <img src="images/photo1.jpg" alt="Our moment" class="photo-img" id="photo1">
                         <div class="photo-placeholder">
-                            <div class="placeholder-icon">💕</div>
-                            <p>Add photo1.jpg</p>
+                            <div class="placeholder-content">
+                                <span class="placeholder-icon">💛</span>
+                                <p>Add photo1.jpg</p>
+                                <small>"Dangerously in Love"</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="photo-shine"></div>
+                    <div class="card-label">Dangerously in Love</div>
                 </div>
 
-                <div class="glass-card photo-card" data-tilt>
-                    <div class="photo-frame">
-                        <img src="images/photo2.jpg" alt="Special moment" class="gallery-photo" id="photo2">
+                <div class="photo-card" data-album="halo">
+                    <div class="gold-frame featured">
+                        <img src="images/photo2.jpg" alt="Our moment" class="photo-img" id="photo2">
                         <div class="photo-placeholder">
-                            <div class="placeholder-icon">💖</div>
-                            <p>Add photo2.jpg</p>
+                            <div class="placeholder-content">
+                                <span class="placeholder-icon">✨</span>
+                                <p>Add photo2.jpg</p>
+                                <small>"You're my Halo"</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="photo-shine"></div>
+                    <div class="card-label">Halo</div>
                 </div>
 
-                <div class="glass-card photo-card" data-tilt>
-                    <div class="photo-frame">
-                        <img src="images/photo3.jpg" alt="Special moment" class="gallery-photo" id="photo3">
+                <div class="photo-card" data-album="renaissance">
+                    <div class="gold-frame">
+                        <img src="images/photo3.jpg" alt="Our moment" class="photo-img" id="photo3">
                         <div class="photo-placeholder">
-                            <div class="placeholder-icon">💝</div>
-                            <p>Add photo3.jpg</p>
+                            <div class="placeholder-content">
+                                <span class="placeholder-icon">🌟</span>
+                                <p>Add photo3.jpg</p>
+                                <small>"Renaissance Love"</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="photo-shine"></div>
+                    <div class="card-label">Renaissance</div>
                 </div>
             </div>
         </section>
 
-        <!-- Question Section -->
+        <!-- Question Section: Single Ladies Reference -->
         <section class="question-section">
-            <div class="glass-card question-card">
-                <h3 class="question-text">So... what do you say?</h3>
-                <div class="button-group">
-                    <button class="response-btn btn-yes" data-response="yes">
-                        <span class="btn-text">Yes! 💕</span>
-                        <span class="btn-glow"></span>
+            <div class="question-card">
+                <div class="microphone-icon">🎤</div>
+                <h3 class="question-title">If You Liked It...</h3>
+                <p class="question-text">Will you be my Valentine?</p>
+                <p class="question-subtext">(then you should put a ring on it 💍)</p>
+
+                <!-- Beyonce-Themed Buttons -->
+                <div class="button-container">
+                    <button class="bey-btn btn-xo" data-response="xo" data-song="XO">
+                        <span class="btn-icon">💕</span>
+                        <span class="btn-text">XO</span>
+                        <div class="btn-shimmer"></div>
                     </button>
-                    <button class="response-btn btn-absolutely" data-response="YES">
-                        <span class="btn-text">Absolutely! 💖</span>
-                        <span class="btn-glow"></span>
+
+                    <button class="bey-btn btn-halo" data-response="halo" data-song="Halo">
+                        <span class="btn-icon">✨</span>
+                        <span class="btn-text">HALO</span>
+                        <div class="btn-shimmer"></div>
                     </button>
-                    <button class="response-btn btn-forever" data-response="forever">
-                        <span class="btn-text">Forever! 💝</span>
-                        <span class="btn-glow"></span>
+
+                    <button class="bey-btn btn-crazy" data-response="crazy" data-song="Crazy in Love">
+                        <span class="btn-icon">👑</span>
+                        <span class="btn-text">CRAZY IN LOVE</span>
+                        <div class="btn-shimmer"></div>
                     </button>
+                </div>
+
+                <!-- Easter Egg Counter -->
+                <div class="easter-egg-hint" id="easterEggHint">
+                    <small>🐝 Click the crown 👑 | Try: ↑↑↓↓←→←→ B A</small>
                 </div>
             </div>
         </section>
 
-        <!-- Response Message -->
-        <div class="response-container" id="responseContainer">
-            <div class="glass-card response-card">
-                <h2 id="responseMessage"></h2>
-                <div class="confetti-container" id="confettiContainer"></div>
+        <!-- Response Section -->
+        <div class="response-section" id="responseSection">
+            <div class="response-card">
+                <h2 class="response-title" id="responseTitle"></h2>
+                <p class="response-lyric" id="responseLyric"></p>
+                <div class="response-icon" id="responseIcon"></div>
             </div>
         </div>
+
+        <!-- Hidden Easter Eggs -->
+        <div class="easter-egg-message" id="easterEggMessage"></div>
     </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <!-- Formation Flash -->
+    <div class="formation-flash" id="formationFlash"></div>
 
     <script src="script.js"></script>
 </body>
