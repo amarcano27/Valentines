@@ -69,11 +69,11 @@
 
     // ---------- SPOTIFY MUSIC PLAYER ----------
     var spotifyTracks = [
-        '0fdTXMBCagKhIHByFOGxJb', // Crazy in Love
+        '5KojFwnZ1EcftHOwCSe71S', // Crazy in Love (feat. JAY-Z) - Single Version
         '4JehYebiI9JE8sR8MisGVb', // Halo
-        '3w2Jpteg2gHBRGR0M4cqdJ', // XO
-        '4hkS1BVSV8WGZPoamA1KAb', // Love on Top
-        '1mea3bSkSGXuIRvnydlB5b'  // Dangerously in Love 2
+        '40xhyfAPDoMtv494MfPevP', // XO
+        '1z6WtY7X4HQJvzxC4UgkSf', // Love on Top
+        '0KFuXEdOp5QfIfxHR6TJSm'  // Dangerously in Love 2
     ];
 
     var currentTrack = 0;
@@ -108,7 +108,7 @@
     function selectTrack(idx) {
         currentTrack = idx;
         var iframe = document.getElementById('spotifyPlayer');
-        iframe.src = 'https://open.spotify.com/embed/track/' + spotifyTracks[idx] + '?utm_source=generator&theme=0';
+        iframe.src = 'https://open.spotify.com/embed/track/' + spotifyTracks[idx] + '?utm_source=generator&theme=0&autoplay=1';
 
         document.querySelectorAll('.track').forEach(function (t, i) {
             t.classList.toggle('active', i === idx);
