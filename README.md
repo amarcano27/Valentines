@@ -47,6 +47,83 @@ Follow these steps to deploy your Valentine's website on GitHub Pages:
    - The website will only be accessible via the direct link
    - You can also make the repository private in Settings
 
+## Setting Up a Custom Domain
+
+Make your Valentine's website even more special with a custom domain like `mylove.com`!
+
+### Step 1: Update the CNAME File
+
+1. Open the `CNAME` file in this repository
+2. Replace `yourdomain.com` with your actual domain:
+   ```
+   mylove.com
+   ```
+3. Commit and push the change
+
+### Step 2: Configure Your Domain Provider
+
+Go to your domain provider (GoDaddy, Namecheap, Cloudflare, etc.) and add these DNS records:
+
+**For a root domain (example.com):**
+```
+Type: A
+Name: @
+Value: 185.199.108.153
+TTL: 3600
+
+Type: A
+Name: @
+Value: 185.199.109.153
+TTL: 3600
+
+Type: A
+Name: @
+Value: 185.199.110.153
+TTL: 3600
+
+Type: A
+Name: @
+Value: 185.199.111.153
+TTL: 3600
+```
+
+**For a subdomain (www.example.com or valentine.example.com):**
+```
+Type: CNAME
+Name: www (or your subdomain)
+Value: yourusername.github.io
+TTL: 3600
+```
+
+### Step 3: Enable Custom Domain in GitHub
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Pages**
+3. Under "Custom domain", enter your domain
+4. Click **Save**
+5. Check **Enforce HTTPS** (wait a few minutes for the certificate)
+
+### Step 4: Wait for DNS Propagation
+
+- DNS changes can take 24-48 hours to propagate worldwide
+- Usually it's much faster (15-60 minutes)
+- Test your domain at https://www.whatsmydns.net/
+
+### Popular Domain Providers
+
+- **Namecheap**: ~$10-15/year, easy to use
+- **Google Domains**: ~$12/year, simple interface
+- **Cloudflare**: Free .xyz domains sometimes available
+- **Porkbun**: ~$5-10/year, affordable options
+
+### Free Alternatives
+
+If you want a free custom domain experience:
+
+1. **GitHub Pages subdomain**: `yourusername.github.io/valentines` (already free!)
+2. **Netlify**: Offers free subdomains like `yourname.netlify.app`
+3. **Vercel**: Offers free subdomains like `yourname.vercel.app`
+
 ## Customization
 
 ### Changing the Question
@@ -138,6 +215,7 @@ valentine-website/
 ├── style.css           # All styling and animations
 ├── script.js           # Interactive functionality
 ├── README.md           # This file
+├── CNAME               # Custom domain configuration
 └── images/             # Photo gallery directory
     ├── README.md       # Image upload instructions
     ├── photo1.jpg      # Your first photo (add here)
