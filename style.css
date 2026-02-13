@@ -1179,6 +1179,10 @@ body {
     overflow: hidden;
 }
 
+.spotify-embed iframe {
+    display: block;
+}
+
 /* ---------- CONFETTI ---------- */
 #confetti-container {
     position: fixed;
@@ -1380,6 +1384,8 @@ body {
 
     .player-drawer {
         width: 290px;
+        max-height: 80vh;
+        overflow-y: auto;
     }
 
     .celebration-card {

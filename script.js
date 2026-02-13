@@ -67,13 +67,13 @@
         setTimeout(function () { playTone(1100, 0.15, 'triangle', 0.06); }, 160);
     }
 
-    // ---------- SPOTIFY MUSIC PLAYER ----------
-    var spotifyTracks = [
-        '5KojFwnZ1EcftHOwCSe71S', // Crazy in Love (feat. JAY-Z) - Single Version
-        '4JehYebiI9JE8sR8MisGVb', // Halo
-        '40xhyfAPDoMtv494MfPevP', // XO
-        '1z6WtY7X4HQJvzxC4UgkSf', // Love on Top
-        '0KFuXEdOp5QfIfxHR6TJSm'  // Dangerously in Love 2
+    // ---------- YOUTUBE MUSIC PLAYER ----------
+    var youtubeTracks = [
+        'ViwtNLUqkMY', // Crazy in Love - Beyoncé ft. Jay-Z
+        'bnVUHWCynig', // Halo - Beyoncé
+        '3xUfCUFPL-8', // XO - Beyoncé
+        'Ob7vObnFUJc', // Love on Top - Beyoncé
+        'bnVUHWCynig'  // Halo (placeholder for Dangerously in Love 2 - no official video)
     ];
 
     var currentTrack = 0;
@@ -108,7 +108,7 @@
     function selectTrack(idx) {
         currentTrack = idx;
         var iframe = document.getElementById('spotifyPlayer');
-        iframe.src = 'https://open.spotify.com/embed/track/' + spotifyTracks[idx] + '?utm_source=generator&theme=0&autoplay=1';
+        iframe.src = 'https://www.youtube.com/embed/' + youtubeTracks[idx] + '?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1';
 
         document.querySelectorAll('.track').forEach(function (t, i) {
             t.classList.toggle('active', i === idx);
@@ -584,24 +584,23 @@
             // Get iframe and completely rebuild it with autoplay
             var iframe = document.getElementById('spotifyPlayer');
             var parent = iframe.parentNode;
-            var trackId = spotifyTracks[0]; // Start with Crazy in Love
+            var videoId = youtubeTracks[0]; // Start with Crazy in Love
 
             // Remove old iframe
             parent.removeChild(iframe);
 
-            // Create new iframe with autoplay from scratch (this bypasses browser blocks)
+            // Create new YouTube iframe with autoplay from scratch
             var newIframe = document.createElement('iframe');
             newIframe.id = 'spotifyPlayer';
             newIframe.style.borderRadius = '12px';
             newIframe.width = '100%';
-            newIframe.height = '80';
+            newIframe.height = '200';
             newIframe.frameBorder = '0';
             newIframe.allowFullscreen = true;
-            newIframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-            newIframe.loading = 'lazy';
+            newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
 
-            // Set source with autoplay - this happens AFTER user click
-            newIframe.src = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0&autoplay=1';
+            // YouTube embed with autoplay - this happens AFTER user click
+            newIframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1';
 
             parent.appendChild(newIframe);
 
