@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Floating hearts background -->
+        <div class="hearts-container">
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+        </div>
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="question-box">
+                <h1 class="question">Will you be my Valentine?</h1>
+                <div class="heart-icon">💖</div>
+            </div>
+
+            <div class="buttons-container">
+                <button class="btn btn-yes" onclick="handleResponse('yes')">
+                    Yes
+                </button>
+                <button class="btn btn-yes-big" onclick="handleResponse('YES')">
+                    YES
+                </button>
+                <button class="btn btn-forever" onclick="handleResponse('forever')">
+                    FOREVER
+                </button>
+            </div>
+
+            <!-- Response message (hidden initially) -->
+            <div id="response-message" class="response-message hidden">
+                <div class="celebration">
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                </div>
+                <h2 id="response-text"></h2>
+                <div class="sparkles">✨✨✨</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
