@@ -568,23 +568,42 @@
     function initMusicStart() {
         var overlay = document.getElementById('musicStartOverlay');
         var btn = document.getElementById('musicStartBtn');
+        var musicStarted = false;
 
-        btn.addEventListener('click', function () {
-            // Hide overlay
+        function startMusic() {
+            if (musicStarted) return;
+            musicStarted = true;
+
+            // Hide overlay with animation
             overlay.classList.add('hidden');
 
             // Start vinyl spinning
             var vinyl = document.getElementById('vinylRecord');
             vinyl.classList.add('spinning');
 
-            // Force iframe reload with autoplay AFTER user interaction
+            // Get iframe and completely rebuild it with autoplay
             var iframe = document.getElementById('spotifyPlayer');
+            var parent = iframe.parentNode;
             var trackId = spotifyTracks[0]; // Start with Crazy in Love
 
-            // Add a small delay to ensure user interaction is registered
-            setTimeout(function () {
-                iframe.src = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0&autoplay=1';
-            }, 100);
+            // Remove old iframe
+            parent.removeChild(iframe);
+
+            // Create new iframe with autoplay from scratch (this bypasses browser blocks)
+            var newIframe = document.createElement('iframe');
+            newIframe.id = 'spotifyPlayer';
+            newIframe.style.borderRadius = '12px';
+            newIframe.width = '100%';
+            newIframe.height = '80';
+            newIframe.frameBorder = '0';
+            newIframe.allowFullscreen = true;
+            newIframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+            newIframe.loading = 'lazy';
+
+            // Set source with autoplay - this happens AFTER user click
+            newIframe.src = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0&autoplay=1';
+
+            parent.appendChild(newIframe);
 
             // Play welcome tone
             setTimeout(function () {
@@ -592,12 +611,14 @@
             }, 200);
 
             sfxClick();
-        });
+        }
+
+        btn.addEventListener('click', startMusic);
 
         // Also allow clicking anywhere on the overlay to start
         overlay.addEventListener('click', function (e) {
             if (e.target === overlay) {
-                btn.click();
+                startMusic();
             }
         });
     }
