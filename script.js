@@ -377,13 +377,17 @@
     }
 
     // ---------- RESPONSE BUTTONS ----------
+    var openNoFlow = null; // will be set by initNoButton
+
     function initButtons() {
         document.querySelectorAll('.btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 var response = this.getAttribute('data-response');
                 sfxClick();
 
-                if (response === 'crazy') {
+                if (response === 'no') {
+                    if (openNoFlow) openNoFlow();
+                } else if (response === 'crazy') {
                     handleCrazy();
                 } else {
                     handleResponse(response);
@@ -484,6 +488,118 @@
             drawer.classList.add('open');
             playerOpen = true;
         }, 600);
+    }
+
+    // ---------- NO BUTTON CONFIRMATION FLOW ----------
+    var noSteps = [
+        {
+            emoji: '\uD83D\uDE33',
+            title: 'ARE YOU SURE?!',
+            subtitle: 'Think about what you\'re doing right now...'
+        },
+        {
+            emoji: '\uD83D\uDE31',
+            title: 'ARE YOU SURE x2?!',
+            subtitle: 'Like... really really sure? No take-backs!'
+        },
+        {
+            emoji: '\uD83D\uDE2D',
+            title: 'ARE YOU POSITIVE?!',
+            subtitle: 'Last chance to make the right decision...'
+        }
+    ];
+    var noStep = 0;
+
+    function initNoButton() {
+        var noOverlay = document.getElementById('noOverlay');
+        var noCard = document.getElementById('noCard');
+        var noEmoji = document.getElementById('noEmoji');
+        var noTitle = document.getElementById('noTitle');
+        var noSubtitle = document.getElementById('noSubtitle');
+        var noConfirmBtn = document.getElementById('noConfirmBtn');
+        var noBackBtn = document.getElementById('noBackBtn');
+        var roastOverlay = document.getElementById('roastOverlay');
+        var roastPlayer = document.getElementById('roastPlayer');
+        var roastCloseBtn = document.getElementById('roastCloseBtn');
+
+        function showNoStep(step) {
+            var data = noSteps[step];
+            noEmoji.textContent = data.emoji;
+            noTitle.textContent = data.title;
+            noSubtitle.textContent = data.subtitle;
+
+            // Re-trigger shake animation
+            noEmoji.style.animation = 'none';
+            noEmoji.offsetHeight; // force reflow
+            noEmoji.style.animation = 'noShake 0.6s ease-in-out';
+
+            // Bounce the card
+            noCard.style.transform = 'scale(0.9)';
+            setTimeout(function () {
+                noCard.style.transform = 'scale(1) translateY(0)';
+            }, 100);
+
+            // Screen shake
+            document.body.style.animation = 'screenShake 0.4s ease-in-out';
+            setTimeout(function () { document.body.style.animation = ''; }, 400);
+
+            playTone(200 - step * 40, 0.3, 'sawtooth', 0.1);
+        }
+
+        function openNoOverlay() {
+            noStep = 0;
+            showNoStep(0);
+            noOverlay.classList.add('show');
+        }
+
+        function closeNoOverlay() {
+            noOverlay.classList.remove('show');
+            sfxClick();
+        }
+
+        // "Yes I'm sure" button - advance to next step or show roast
+        noConfirmBtn.addEventListener('click', function () {
+            noStep++;
+            sfxClick();
+
+            if (noStep < noSteps.length) {
+                showNoStep(noStep);
+            } else {
+                // All confirmations done - show the roast!
+                noOverlay.classList.remove('show');
+                showRoast();
+            }
+        });
+
+        // "Go back" button - close and go back to valentine
+        noBackBtn.addEventListener('click', function () {
+            closeNoOverlay();
+            sfxCelebration();
+            floatEmojis(['\u2764\uFE0F', '\uD83D\uDC95', '\u2728'], 10);
+        });
+
+        function showRoast() {
+            roastOverlay.classList.add('show');
+
+            // Start the video at 35 seconds
+            roastPlayer.src = 'https://www.youtube.com/embed/myJDBos5Vyw?autoplay=1&start=35&controls=1&rel=0&modestbranding=1';
+
+            // dramatic sound effect
+            playTone(100, 0.5, 'sawtooth', 0.15);
+            setTimeout(function () { playTone(80, 0.6, 'sawtooth', 0.12); }, 200);
+        }
+
+        // Close roast and go back
+        roastCloseBtn.addEventListener('click', function () {
+            roastOverlay.classList.remove('show');
+            roastPlayer.src = ''; // stop the video
+            sfxCelebration();
+            spawnConfetti(80);
+            floatEmojis(['\u2764\uFE0F', '\uD83D\uDC95', '\uD83D\uDC51', '\u2728'], 20);
+        });
+
+        // Expose the open function for the main button handler
+        return openNoOverlay;
     }
 
     // ---------- EASTER EGGS ----------
@@ -627,6 +743,7 @@
         initParticles();
         initScrollReveal();
         initImages();
+        openNoFlow = initNoButton();
         initButtons();
         initMusicPlayer();
         initThemes();

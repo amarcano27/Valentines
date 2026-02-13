@@ -888,6 +888,247 @@ body {
     50% { box-shadow: 0 4px 40px var(--glow); }
 }
 
+.btn-no {
+    background: linear-gradient(135deg, #333, #555);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 14px 32px;
+    margin-top: 8px;
+    opacity: 0.5;
+    font-size: 0.85em;
+    transition: all 0.4s var(--ease-out-expo);
+}
+
+.btn-no:hover {
+    opacity: 0.8;
+    background: linear-gradient(135deg, #444, #666);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-no .btn-label {
+    font-size: 1.1rem;
+}
+
+/* ---------- NO CONFIRMATION OVERLAY ---------- */
+.no-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s var(--ease-out-expo);
+}
+
+.no-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+}
+
+.no-card {
+    text-align: center;
+    padding: 48px 44px;
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+    transform: scale(0.8) translateY(20px);
+    transition: transform 0.5s var(--ease-spring);
+    max-width: 420px;
+    width: 90vw;
+}
+
+.no-overlay.show .no-card {
+    transform: scale(1) translateY(0);
+}
+
+.no-emoji {
+    font-size: 5rem;
+    margin-bottom: 16px;
+    animation: noShake 0.6s ease-in-out;
+}
+
+@keyframes noShake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-15deg); }
+    40% { transform: rotate(15deg); }
+    60% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+}
+
+.no-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    letter-spacing: 0.08em;
+    color: #FF4444;
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
+}
+
+.no-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-bottom: 32px;
+}
+
+.no-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-btn {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+}
+
+.no-btn:hover {
+    transform: translateY(-3px);
+}
+
+.no-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.no-btn-yes {
+    background: linear-gradient(135deg, #444, #666);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.no-btn-yes:hover {
+    background: linear-gradient(135deg, #555, #777);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.no-btn-back {
+    background: linear-gradient(135deg, var(--btn-crazy-a), var(--btn-crazy-b));
+    color: white;
+    animation: backBtnGlow 2s ease-in-out infinite;
+}
+
+.no-btn-back:hover {
+    box-shadow: 0 8px 30px var(--glow);
+}
+
+@keyframes backBtnGlow {
+    0%, 100% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); }
+    50% { box-shadow: 0 4px 30px var(--glow); }
+}
+
+/* ---------- ROAST OVERLAY ---------- */
+.roast-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s var(--ease-out-expo);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.roast-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.95);
+}
+
+.roast-card {
+    text-align: center;
+    padding: 40px 32px;
+    background: linear-gradient(135deg, #1a0000, #2a0000, #1a0000);
+    border: 2px solid rgba(255, 68, 68, 0.3);
+    border-radius: 28px;
+    box-shadow: 0 30px 80px rgba(255, 0, 0, 0.15), 0 0 60px rgba(255, 0, 0, 0.1);
+    transform: scale(0.8);
+    transition: transform 0.6s var(--ease-spring);
+    max-width: 500px;
+    width: 90vw;
+}
+
+.roast-overlay.show .roast-card {
+    transform: scale(1);
+}
+
+.roast-warning {
+    display: inline-block;
+    padding: 8px 24px;
+    background: #FF4444;
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    animation: warningPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(255, 68, 68, 0.8); }
+}
+
+.roast-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    color: #FF6666;
+    margin-bottom: 8px;
+}
+
+.roast-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-bottom: 24px;
+}
+
+.roast-video {
+    margin: 0 auto 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 68, 68, 0.2);
+}
+
+.roast-close-btn {
+    padding: 16px 36px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--btn-crazy-a), var(--btn-crazy-b));
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.roast-close-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px var(--glow);
+}
+
+.roast-close-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
 .easter-hint {
     margin-top: 32px;
     font-size: 0.75rem;

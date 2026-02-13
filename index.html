@@ -149,6 +149,10 @@
                         <span class="btn-label">HELL YES! Crazy in Love</span>
                         <span class="btn-sub">got me looking so crazy right now</span>
                     </button>
+                    <button class="btn btn-no" data-response="no">
+                        <span class="btn-label">No...</span>
+                        <span class="btn-sub">I must be out of my mind</span>
+                    </button>
                 </div>
 
                 <p class="easter-hint">tap the crown, photos, and vinyl for surprises</p>
@@ -246,6 +250,41 @@
     <!-- Easter Egg Overlay -->
     <div class="egg-overlay" id="eggOverlay">
         <div class="egg-content" id="eggContent"></div>
+    </div>
+
+    <!-- NO Confirmation Overlay -->
+    <div class="no-overlay" id="noOverlay">
+        <div class="no-card" id="noCard">
+            <div class="no-emoji" id="noEmoji"></div>
+            <h2 class="no-title" id="noTitle"></h2>
+            <p class="no-subtitle" id="noSubtitle"></p>
+            <div class="no-buttons" id="noButtons">
+                <button class="no-btn no-btn-yes" id="noConfirmBtn">Yes, I'm sure</button>
+                <button class="no-btn no-btn-back" id="noBackBtn">Wait, go back!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NO Final Roast Screen -->
+    <div class="roast-overlay" id="roastOverlay">
+        <div class="roast-card">
+            <div class="roast-warning">WARNING: JUST A JOKE</div>
+            <h2 class="roast-title">You really said NO?!</h2>
+            <p class="roast-subtitle">Be ready to get offended...</p>
+            <div class="roast-video">
+                <iframe
+                    id="roastPlayer"
+                    width="100%"
+                    height="250"
+                    src=""
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    style="border-radius:12px"
+                ></iframe>
+            </div>
+            <button class="roast-close-btn" id="roastCloseBtn">OK OK I changed my mind!</button>
+        </div>
     </div>
 
     <!-- Music Start Overlay -->
