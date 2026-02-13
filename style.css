@@ -151,6 +151,93 @@ body {
     }
 }
 
+.photo-gallery {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+    animation: fadeInUp 1.2s ease-out;
+}
+
+.photo-frame {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.photo-frame:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.heart-frame {
+    border: 5px solid #f5576c;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.circle-frame {
+    border: 5px solid #667eea;
+    border-radius: 50%;
+    animation: pulse 3s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+.gallery-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    display: none;
+}
+
+.gallery-photo.loaded {
+    display: block;
+}
+
+.photo-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #d63384;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-placeholder span {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.photo-placeholder p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.photo-frame img[src*=".jpg"],
+.photo-frame img[src*=".png"],
+.photo-frame img[src*=".jpeg"],
+.photo-frame img[src*=".gif"] {
+    display: block;
+}
+
+.photo-frame:has(img[src*=".jpg"]:not([src$="photo1.jpg"]):not([src$="photo2.jpg"]):not([src$="photo3.jpg"])) .photo-placeholder,
+.photo-frame img + .photo-placeholder {
+    display: none;
+}
+
 .question-box {
     background: rgba(255, 255, 255, 0.95);
     padding: 50px 40px;

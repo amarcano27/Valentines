@@ -78,3 +78,31 @@ document.querySelectorAll('.btn').forEach(button => {
         }, 500);
     });
 });
+
+// Handle image loading for photo gallery
+document.querySelectorAll('.gallery-photo').forEach(img => {
+    img.addEventListener('load', function() {
+        this.classList.add('loaded');
+        const placeholder = this.parentElement.querySelector('.photo-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+    });
+
+    img.addEventListener('error', function() {
+        this.style.display = 'none';
+        const placeholder = this.parentElement.querySelector('.photo-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
+    });
+
+    // Check if image is already loaded (from cache)
+    if (img.complete && img.naturalWidth > 0) {
+        img.classList.add('loaded');
+        const placeholder = img.parentElement.querySelector('.photo-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+    }
+});

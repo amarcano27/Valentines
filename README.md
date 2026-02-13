@@ -4,6 +4,7 @@ A beautiful, animated Valentine's Day website with interactive elements and cele
 
 ## Features
 
+- **Photo Gallery**: Display 3 personal photos in beautiful heart and circle frames
 - Animated gradient background with smooth color transitions
 - 10 continuously floating hearts in the background
 - Pulsing question box with glowing text
@@ -76,26 +77,55 @@ Change button labels in `index.html`:
 </button>
 ```
 
-## Adding Photos
+## Adding Your Personal Photos
 
-You can add personal photos to make it more special:
+The website includes a beautiful photo gallery that displays 3 photos in themed frames!
 
-### Option 1: Background Image
-Add this to `style.css` in the `.container` class:
+### How to Add Photos:
+
+1. **Place your photos** in the `images/` directory
+2. **Name them** as follows:
+   - `photo1.jpg` - First photo (heart frame)
+   - `photo2.jpg` - Second photo (circle frame)
+   - `photo3.jpg` - Third photo (heart frame)
+3. **Refresh** your browser and the photos will appear automatically!
+
+### Photo Guidelines:
+
+- **Formats**: JPG, PNG, or GIF
+- **Size**: Keep under 2MB per image for fast loading
+- **Dimensions**: 800x800px or larger recommended
+- **Orientation**: Square or portrait photos work best
+
+### Features:
+
+- **Animated Frames**: Photos appear in pulsing heart and circle frames
+- **Hover Effects**: Frames lift and scale when you hover over them
+- **Smart Placeholders**: Heart emojis show when photos aren't uploaded yet
+- **Responsive**: Frames adapt beautifully to mobile and desktop screens
+
+### Additional Customization Options:
+
+#### Option 1: Background Image
+Add a romantic background photo in `style.css`:
 ```css
-background-image: url('your-photo.jpg');
-background-size: cover;
-background-position: center;
-background-blend-mode: overlay;
+.container {
+    background-image: url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
+}
 ```
 
-### Option 2: Add Photo in Question Box
-Add an `<img>` tag in `index.html` inside the question box:
+#### Option 2: More Photos
+To add more photos, duplicate a photo frame in `index.html`:
 ```html
-<div class="question-box">
-    <img src="your-photo.jpg" style="max-width: 300px; border-radius: 15px; margin-bottom: 20px;">
-    <h1 class="question">Will you be my Valentine?</h1>
-    <div class="heart-icon">💖</div>
+<div class="photo-frame heart-frame">
+    <img src="images/photo4.jpg" alt="Special moment" class="gallery-photo" id="photo4">
+    <div class="photo-placeholder">
+        <span>💕</span>
+        <p>Add photo4.jpg</p>
+    </div>
 </div>
 ```
 
@@ -107,7 +137,12 @@ valentine-website/
 ├── index.html          # Main HTML structure
 ├── style.css           # All styling and animations
 ├── script.js           # Interactive functionality
-└── README.md           # This file
+├── README.md           # This file
+└── images/             # Photo gallery directory
+    ├── README.md       # Image upload instructions
+    ├── photo1.jpg      # Your first photo (add here)
+    ├── photo2.jpg      # Your second photo (add here)
+    └── photo3.jpg      # Your third photo (add here)
 ```
 
 ## Technologies Used
